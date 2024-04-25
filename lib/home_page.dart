@@ -16,6 +16,8 @@ import 'package:schedule_calendar/main_calendar.dart';
 import 'package:schedule_calendar/component/schedule_card.dart';
 import 'package:schedule_calendar/component/today_banner.dart';
 import 'model/schedule_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:schedule_calendar/login/login_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -58,15 +60,12 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  /*Map<DateTime, List<dynamic>> events = {
-    DateTime.utc(2024,3,25) : [  ('title'),  ('title2') , ('title'),  ('title2'), ('title'),('title'),  ('title2') , ('title'),  ('title2'), ('title'),  ],
-    DateTime.utc(2024,3,14) : [  ('title3') ],
-  };*/
-
   @override
   Widget build(BuildContext context) {
     print("@@@@@@@@@@@@@@@ home_page build @@@@@@@@@@@@");
     provider = Provider.of<CalendarProvider>(context);
+
+    const List<String> list = <String>['로그아웃', '탈퇴하기'];
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
@@ -131,34 +130,79 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       appBar: AppBar(
         title: Text('Schedule Calendar'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  PageRouteBuilder(
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(1, 0),
-                          end: const Offset(0, 0),
-                        ).animate(
-                          CurvedAnimation(
-                            parent: animation,
-                            curve: Curves.easeInOutCubic,
-                          ),
-                        ),
-                        child: child,
-                      );
-                    },
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        LoginPage(),
-                  ),
-                  (route) => false);
-            },
+          Padding(
+            padding: const EdgeInsets.only( right: 15.0),
+            child: DropdownButton(
+                underline: const SizedBox.shrink(),
+                icon: const Icon(Icons.menu),
+                items: list.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? str) async {
+                  if(str == list[0]){
+                    await FirebaseAuth.instance.signOut();
+                    moveLoginPage();
+                  }else{
+                    userDelete();
+                  }
+                }
+            ),
+
           ),
+
+
+/*
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+
+
+              final user = FirebaseAuth.instance.currentUser;
+
+              print("delete @1 : ${user}");
+
+              print("delete 2");
+
+              const CircularProgressIndicator();
+
+              if(await emailCheck()){
+                await user?.delete().then((value) => {
+
+                  FirebaseFirestore.instance
+                      .collection('schedule')
+                      .doc(root)
+                      .collection(root)
+                      .get().then((value) {
+                    for(var i in value.docs){
+                      FirebaseFirestore.instance
+                          .collection('schedule')
+                          .doc(root)
+                          .collection(root)
+                          .doc(i.id)
+                          .delete();
+                    }
+                  })
+                });
+
+                await FirebaseFirestore.instance
+                    .collection('schedule')
+                    .doc(root)
+                    .delete().then((value) => moveLoginPage());
+
+              }
+
+              // await FirebaseAuth.instance.signOut();
+
+            },
+
+
+
+
+
+          ),*/
         ],
       ),
       body: Column(
@@ -389,6 +433,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   provider.removeEvent(k, schedule.id);
 
                                   FirebaseFirestore.instance
+                                      .collection('schedule')
+                                      .doc(root)
                                       .collection(root)
                                       .doc(schedule.id)
                                       .delete();
@@ -433,6 +479,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       startTime: schedule.startTime,
                                       endTime: schedule.endTime,
                                       content: schedule.content,
+                                      index: index,
                                     ),
                                   ),
                                 ),
@@ -460,6 +507,199 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
+
+  Widget textWidget(String hint, Widget icon, dynamic controller){
+    return Container(
+      decoration: const ShapeDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFe6dfd8), Color(0xFFf7f5ec)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.0, 0.4],
+          tileMode: TileMode.clamp,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        ),
+      ),
+      child: TextField(
+        controller: controller,
+        expands: false,
+        style: TextStyle(fontSize: 17.0, color: Colors.black54),
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(10.0),
+          prefixIcon: icon,
+          hintText: hint ,
+          border: InputBorder.none,
+          hintStyle: TextStyle(color: Colors.black26),
+        ),
+        keyboardType: TextInputType.text,
+        onSubmitted: (value){
+          // login();
+        },
+
+      ),
+
+    );
+  }
+
+  Future<bool> emailCheck() async{
+
+    var emailController = TextEditingController();
+    var passwordController = TextEditingController();
+
+    var result = false;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: true, //바깥 영역 터치시 닫을지 여부 결정
+      builder: ((context) {
+        return AlertDialog(
+          title: const Text("이메일, 비밀번호 확인"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              textWidget('이메일을 입력해주세요.', const Icon(Icons.email_outlined), emailController),
+              SizedBox(height: 5,),
+              textWidget('비밀번호를 입력해주세요.', const Icon(Icons.lock_outline_rounded), passwordController),
+
+            ],
+          ),
+          actions: <Widget>[
+            Container(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                  backgroundColor: PRIMARY_COLOR,
+                ),
+                onPressed: () async {
+                  print("${emailController.text}  ${passwordController.text}");
+                  result = await userRecertification(emailController.text, passwordController.text);
+                  print("result ! : ${result}");
+                  if(result){
+                    result = true;
+                    Navigator.of(context).pop(); //창 닫기
+                  }else{
+                    Fluttertoast.showToast(
+                        msg: '이메일, 비밀번호가 틀렸습니다.', gravity: ToastGravity.CENTER, toastLength: Toast.LENGTH_SHORT);
+                  }
+                },
+                child: Text(
+                    "확인",
+                  style: TextStyle(
+                    color: LOGIN_TEXT_COLOR,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                  backgroundColor: LIGHT_PRIMARY_COLOR,
+                ),
+                onPressed: () {
+                  result = false;
+                  Navigator.of(context).pop(); //창 닫기
+                },
+                child: Text(
+                  "취소",
+                  style: TextStyle(
+                    color: LOGIN_TEXT_COLOR,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }),
+
+
+
+    );
+
+
+    print("result !2 : ${result}");
+
+    return result;
+  }
+
+  void userDelete() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    const CircularProgressIndicator();
+
+    if (await emailCheck()) {
+      await user?.delete().then((value) => {
+            FirebaseFirestore.instance
+                .collection('schedule')
+                .doc(root)
+                .collection(root)
+                .get()
+                .then((value) {
+              for (var i in value.docs) {
+                FirebaseFirestore.instance
+                    .collection('schedule')
+                    .doc(root)
+                    .collection(root)
+                    .doc(i.id)
+                    .delete();
+              }
+            })
+          });
+
+      await FirebaseFirestore.instance
+          .collection('schedule')
+          .doc(root)
+          .delete()
+          .then((value) => moveLoginPage());
+    }
+  }
+
+  dynamic moveLoginPage(){
+    Navigator.pushAndRemoveUntil(
+        context,
+        PageRouteBuilder(
+          transitionsBuilder:
+              (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: const Offset(0, 0),
+              ).animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeInOutCubic,
+                ),
+              ),
+              child: child,
+            );
+          },
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              LoginPage(),
+        ),
+            (route) => false);
+  }
+
+  Future<bool> userRecertification(String str, String password) async{
+    var bool = false;
+
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+          email: str,
+          password: password)
+          .then((value) => {
+            bool = true
+          });
+    } catch (e) {
+      return false;
+    }
+
+
+    return bool;
+  }
+
 
 
   void onDaySelected(
@@ -529,9 +769,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     events = {};
    // print("getEventMarker ~");
     print("uid : ${FirebaseAuth.instance.currentUser!.uid}");
-    await FirebaseFirestore.instance.collection(
-          FirebaseAuth.instance.currentUser!.uid
-        )
+    print("root : ${root}");
+    await FirebaseFirestore.instance
+        .collection('schedule')
+        .doc(root)
+        .collection(root)
         .get()
         .then(
       (querySnapshot) {

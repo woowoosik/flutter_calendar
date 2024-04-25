@@ -79,7 +79,7 @@ void main() async {
 Future<void> requestNotificationPermission() async{
 
   String? _fcmToken = await FirebaseMessaging.instance.getToken();
-  print('@---:  ${_fcmToken}');
+  print('@-- token --:  ${_fcmToken}');
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 

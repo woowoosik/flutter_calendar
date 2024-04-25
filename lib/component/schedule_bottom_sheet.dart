@@ -405,7 +405,9 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                               */
                               GestureDetector(
                                 onTap: () async {
+                                  print("지도 이동");
                                   if(await checkPermission()){
+                                    print("지도 이동 2 ");
                                     mapData = await Navigator.push(context,
                                       PageRouteBuilder(
                                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -541,8 +543,15 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
   }
 
   Future<Position> getCurrentLocation() async {
-    var _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
+    print("지도 이동3");
+    var _position = await Geolocator.getCurrentPosition(
+      /*  forceAndroidLocationManager: true,*/
+        desiredAccuracy: LocationAccuracy.high
+    );
+
+
+    print("지도 이동4 ${_position}");
     return _position ;
   }
 
@@ -594,10 +603,16 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
           showToast('저장하기 ${root}');
 
           // 스케쥴 모델 파이어스토어에 삽입하기
-          await FirebaseFirestore.instance
+         /* await FirebaseFirestore.instance
               .collection(
-            root
-          )
+                root
+              )
+              .doc(schedule.id)
+              .set(schedule.toJson())*/
+          await FirebaseFirestore.instance
+              .collection("schedule")
+              .doc(root)
+              .collection(root)
               .doc(schedule.id)
               .set(schedule.toJson())
           .then((value) async {
@@ -653,9 +668,9 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
 
                 // 스케쥴 모델 파이어스토어에 삽입하기
                 await FirebaseFirestore.instance
-                    .collection(
-                  root
-                )
+                    .collection('schedule')
+                    .doc(root)
+                    .collection(root)
                     .doc(schedule.id)
                     .set(schedule.toJson())
                     .then((value) async {

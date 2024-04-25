@@ -737,6 +737,8 @@ class _ScheduleDetailPage extends State<ScheduleDetailPage>{
               if(i == length-1){
 
                 await FirebaseFirestore.instance
+                    .collection('schedule')
+                    .doc(root)
                     .collection(root)
                     .doc(widget.schedule.id)
                     .update(schedule.toJson())

@@ -457,6 +457,7 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
 
 
 Future<bool> checkPermission() async {
+
   // 위치권한에 대한 서비스기능을 사용할 수 있는지 ?
   final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
