@@ -6,28 +6,28 @@ class TodayBanner extends StatelessWidget{
   final DateTime selectedDate;
   final int count;
 
-  const TodayBanner({Key? key, required this.selectedDate, required this.count}):super(key: key);
+  final DateTime weekDate;
+  const TodayBanner({Key? key, required this.selectedDate, required this.count, required this.weekDate}):super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
 
+    print("today banner weekDate : ${weekDate}");
     final textStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
-      color: textColor(selectedDate.month),
+      color: textColor(weekDate.month),
     );
 
     return Container(
-      color: color(selectedDate.month),
+      color: color(weekDate.month),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
               padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
-              child: Expanded(
-                child: image(selectedDate.month),
-              ),
+              child: image(weekDate.month),
           ),
 
           Padding(

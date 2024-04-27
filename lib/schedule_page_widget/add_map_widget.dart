@@ -7,7 +7,6 @@ import 'package:schedule_calendar/google_map/google_map.dart';
 import 'package:schedule_calendar/google_map/google_map_address.dart';
 import 'package:schedule_calendar/model/schedule_model.dart';
 
-import '../utils.dart';
 
 
 
@@ -192,7 +191,6 @@ Future<Position> getCurrentLocation() async {
   return _position ;
 }
 
-/*
 
 Future<bool> checkPermission() async {
 
@@ -226,4 +224,4 @@ Future<bool> checkPermission() async {
 
   // return '위치 권한이 허용되었습니다.';
   return true;
-}*/
+}

@@ -11,6 +11,9 @@ import 'package:schedule_calendar/login/login_page.dart';
 
 final root = FirebaseAuth.instance.currentUser!.uid;
 
+
+/*
+
 Future<bool> checkPermission() async {
 
   // 위치권한에 대한 서비스기능을 사용할 수 있는지 ?
@@ -43,4 +46,4 @@ Future<bool> checkPermission() async {
 
   // return '위치 권한이 허용되었습니다.';
   return true;
-}
+}*/

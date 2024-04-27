@@ -265,6 +265,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                             ==null
                             ? 0
                             : provider.events[selectedDate].length,
+                          weekDate: weekDate,
                       ),
                         SizedBox(height: 8.0),
                         Expanded(
@@ -614,8 +615,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         );
       }),
 
-
-
     );
 
 
@@ -695,7 +694,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     } catch (e) {
       return false;
     }
-
 
     return bool;
   }
