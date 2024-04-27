@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:schedule_calendar/model/schedule_model.dart';
+/*
 
 
 class ScheduleRepository{
@@ -47,4 +48,4 @@ class ScheduleRepository{
   }
 
 
-}
+}*/

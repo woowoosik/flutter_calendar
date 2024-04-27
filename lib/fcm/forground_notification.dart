@@ -43,17 +43,6 @@ class LocalNotification {
     );
 
 
-/*
-    _notiPlugin.show(
-      DateTime.now().microsecond,
-      message.notification!.title,
-      message.notification!.body,
-      notiDetails,
-      payload: message.data.toString(),
-    );
-
-*/
-
     var androidDetails = NotificationDetails(
         android: AndroidNotificationDetails(
       '유니크한 알림 ID',
@@ -97,34 +86,6 @@ class LocalNotification {
       _notiPlugin.cancel(int.parse(message.data['id']));
     }
 
-
-
-
-    // _notiPlugin.cancel(id);
-
-
-/*
-    tz.TZDateTime _setDate(DateTime date) {
-
-      Duration offSet = DateTime.now().timeZoneOffset;
-      DateTime local = date.add(-offSet);
-
-      return tz.TZDateTime(tz.local, local.year, local.month, local.day,
-          local.hour, local.minute, local.second);
-    }*/
-/*
-
-    _notiPlugin.zonedSchedule(
-        DateTime.now().microsecond,
-        message.notification!.title,
-        message.notification!.body,
-        tz.TZDateTime(tz.local, 2024, 4, 6, 15, 56, 00),
-        androidDetails,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime
-    );
-*/
 
   }
 

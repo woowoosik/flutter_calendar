@@ -20,50 +20,9 @@ class ScheduleCard extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-
-    print("################  ScheduleCard  ################################");
-    print(
-        "######  ${schedule.startTime} ###############################");
-    print(
-        "######  ${schedule.endTime} ###############################");
-    print(
-        "######  ${schedule.content} ###############################");
-    print("######  ${schedule.id} ###############################");
-
-
-
-    print("######  ${schedule.googleMapCheck?.isChecked} ###############################");
-    print("######  ${schedule.googleMapCheck?.googleMapData?.name} ###############################");
-    print("######  ${schedule.googleMapCheck?.googleMapData?.lat} ###############################");
-    print("######  ${schedule.googleMapCheck?.googleMapData?.lng} ###############################");
-    print("######  ${schedule.googleMapCheck?.googleMapData?.formatted_address} ###############################");
-
-
-    print("######  ${schedule.alarm?.isChecked} ###############################");
-    print("######  ${schedule.alarm?.alarmData?.id} ###############################");
-    print("######  ${schedule.alarm?.alarmData?.alarmDate} ###############################");
-    print("######  ${schedule.alarm?.alarmData?.alarmTime} ###############################");
-
-    print("######  ${index} ###############################");
-
-    print("######  ${schedule.date} ###############################");
-
-    print("######  ${(schedule.date as DateTime).day} ###############################");
-    print("#####################################");
-
     var colorIndex = (((schedule.date as DateTime).day + index) % 10) as int;
 
-
     return Container(
-     /* decoration: BoxDecoration(
-        border: Border.all(
-          width: 2,
-          color: colorList[colorIndex],
-        ),
-        borderRadius: BorderRadius.circular(
-          8.0
-        ),
-      ),*/
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: IntrinsicHeight(     // 높이를 내부 위젯들의 최대 높이로 설정

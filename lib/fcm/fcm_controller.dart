@@ -50,11 +50,6 @@ class FCMController {
             'Authorization': 'key=$_serverKey'
           },
           body: jsonEncode({
-            /*'notification': {
-              'title': title,
-              'body': body,
-              'sound': 'false'
-            },*/
             'ttl': '600000s',
             "content_available": true,
             'data': {
@@ -71,7 +66,6 @@ class FCMController {
             // 상대방 토큰 값, to -> 단일, registration_ids -> 여러명
             'to': userToken,
 
-            // 'registration_ids': tokenList
           }));
     } catch (e) {
       print('error $e');

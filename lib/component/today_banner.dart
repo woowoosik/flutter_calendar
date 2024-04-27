@@ -12,39 +12,40 @@ class TodayBanner extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-   // var image = imageNum(selectedDate.month);
-
-   // print("image @ ${image}");
     final textStyle = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 18,
-      color: Colors.brown,
+      fontSize: 15,
+      color: textColor(selectedDate.month),
     );
 
     return Container(
-      child: Stack(
+      color: color(selectedDate.month),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Flex(
-            direction: Axis.horizontal,
-            children: [
-              Expanded(
+          Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+              child: Expanded(
                 child: image(selectedDate.month),
               ),
-            ],
           ),
+
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   '${selectedDate.year}년  ${selectedDate.month}월  ${selectedDate.day}일',
+                  textAlign: TextAlign.center,
                   style: textStyle,
                 ),
                 Text(
                   '${count}개',
+                  textAlign: TextAlign.center,
                   style: textStyle,
                 ),
+
               ],
             ),
           ),
@@ -57,13 +58,36 @@ class TodayBanner extends StatelessWidget{
 
 Widget image(int month){
   if(3<= month && month <=5){
-    return Image.asset('assets/01.jpg');
-  }else if(4<= month && month <=6){
-    return Image.asset('assets/02.jpg');
-  }else if(7<= month && month <=9){
-    return Image.asset('assets/03.jpg');
+    return Image.asset('assets/tree_01.png', height: 50, fit: BoxFit.fitHeight);
+  }else if(6<= month && month <=8){
+    return Image.asset('assets/tree_02.png', height: 50, fit: BoxFit.fitHeight);
+  }else if(9<= month && month <=11){
+    return Image.asset('assets/tree_03.png', height: 50, fit: BoxFit.fitHeight);
   }else{
-    return Image.asset('assets/04.jpg');
+    return Image.asset('assets/tree_04.png', height: 50, fit: BoxFit.fitHeight);
   }
 
+}
+
+Color color(int month){
+  if(3<= month && month <=5){
+    return SEASON_COLOR_01;
+  }else if(6<= month && month <=8){
+    return SEASON_COLOR_02;
+  }else if(9<= month && month <=11){
+    return SEASON_COLOR_03;
+  }else{
+    return SEASON_COLOR_04;
+  }
+}
+Color textColor(int month){
+  if(3<= month && month <=5){
+    return SEASON_COLOR_TEXT_01;
+  }else if(6<= month && month <=8){
+    return SEASON_COLOR_TEXT_02;
+  }else if(9<= month && month <=11){
+    return SEASON_COLOR_TEXT_03;
+  }else{
+    return SEASON_COLOR_TEXT_04;
+  }
 }

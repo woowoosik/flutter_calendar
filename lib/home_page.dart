@@ -712,25 +712,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       weekDate = focusedDate;
     });
 
-    /*
-    final provider = context.read<ScheduleProvider>();
-    provider.changeSelectedDate(
-      date: selectedDate,
-    );
-    provider.getSchedules(date: selectedDate);
-*/
   }
 
-/*
-
-  void onDaySelected(DateTime selectedDate, DateTime focusedDate){
-    print('onDaySelected  ${selectedDate}  ${focusedDate}');
-    setState(() {
-      this.selectedDate = selectedDate;
-    });
-  }
-
-*/
 
   void onFormatChanged(
       DateTime selectedDate, DateTime focusedDate, dynamic format) {
@@ -740,12 +723,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  /*void onFormatSelected(DateTime selectedDate, DateTime focusedDate, dynamic format){
-    print('onListenFormat  ${selectedDate}  ${format}');
-    setState(() {
-      format == CalendarFormat.week? visible=0:visible=1;
-    });
-  }*/
 
   void onPageChanged(
       DateTime selectedDate, DateTime focusedDate, DateTime focusedDay) async {
@@ -755,10 +732,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-/*
-  List<dynamic> _getEventsForDay(DateTime day) {
-    return events[day] ?? [];
-  }*/
 
   List<dynamic> getEventsForDay(DateTime day) {
    // print("^ getEventsForDay  ${provider.events}");
@@ -795,25 +768,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           var endTime = data.data()['endTime'];
           var id = data.data()['id'];
           var googleMapCheck = data.data()['googleMapCheck'];
-          /*GoogleMapCheck(
-                  isChecked: false,
-                  googleMapData: GoogleMapData(
-                    lng: 0.0,
-                    formatted_address: "없음",
-                    name: '없음',
-                    lat: 0.0,
-                  )
-              );
-*/
+
           var alarm = data.data()['alarm'];
-          /* Alarm(
-                  isChecked: false,
-                  alarmData: AlarmData(
-                      alarmDate: 11110101,
-                      alarmTime: 11110102,
-                      id: 1111
-                  )
-              );*/
+
 
           if (events[date] == null) {
             events[date] = [];
@@ -838,57 +795,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
     setState(() {});
 
-    // Map<DateTime, List<dynamic>> events = {};
-
-    /*StreamBuilder<QuerySnapshot>(
-
-      // ListView에 적용했던 같은 쿼리
-      stream: FirebaseFirestore.instance
-          .collection('schedule',)
-          .snapshots(),
-      builder: (context, snapshot) {
-        print("snapshot : ${snapshot}");
-
-        var docs = snapshot.data?.docs;
-        print("docs length : ${docs?.length}");
-
-        for (var data in docs!) {
-          // var date = (data.data()['date'] as Timestamp).toDate();
-
-          var dateTimestamp = (data.data()['date'] as Timestamp).toDate();
-          var date = DateTime.utc(dateTimestamp.year, dateTimestamp.month, dateTimestamp.day);
-          var content = data.data()['content'];
-          var startTime = data.data()['startTime'];
-          var endTime = data.data()['endTime'];
-          var id = data.data()['id'];
-
-          if (events[date] == null) {
-            events[date] = [];
-          }
-
-          var scheduleData = ScheduleModel(
-            id: id,
-            date: date,
-            startTime: startTime,
-            endTime: endTime,
-            content: content,
-
-          );
-          events[date]?.add(scheduleData);
-        }
-
-        print("event :  ${events}");
-
-       // return events
-      },
-    );
-
-*/
-
-/*
-    setState(() {
-
-    });*/
 
     return events;
   }

@@ -21,12 +21,7 @@ class GoogleMapPage extends StatefulWidget{
 }
 
 class _GoogleMapPage extends State<GoogleMapPage>{
-/*
-  late GoogleMapController mapController;
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }*/
 
   GoogleMapController? _googleMapController;
 

@@ -17,6 +17,7 @@ import 'package:schedule_calendar/home_page.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -29,6 +30,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 // e9x-GZLIS2ev4_M9d1QFou:APA91bH5STmJQRpMUw0yVKVB_1C9ktGFnJ8hYP5pW90OvMEhQhCPG20yYo-HJNC4Y0oyVjXRURXv4FYEEJ9Ri1xh-kkcbyc0bhM4jIbgRVJSrubpDYKKgRU0KhjuYNdVyTjVZMAzWp4D
 void main() async {
+  // 세로 모드 고정
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   // 플러터 프레임워크가 준비될 때까지 대기
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -41,27 +48,33 @@ void main() async {
   await initializeDateFormatting();
 
 
- // _initLocalNotification();
-  LocalNotification.initialize();
+  if (Platform.isAndroid) {
+    print("##### aos 플랫폼 #####");
+    // _initLocalNotification();
+    LocalNotification.initialize();
 
-  requestNotificationPermission();
-  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+    requestNotificationPermission();
+    await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage? message) async {
-    if (message != null) {
-      if (message.notification != null) {
-        print('t ${message.notification!.title}');
-        print('b ${message.notification!.body}');
-        print('${message.data["click_action"]}');
+    FirebaseMessaging.onMessage.listen((RemoteMessage? message) async {
+      if (message != null) {
+        if (message.notification != null) {
+          print('t ${message.notification!.title}');
+          print('b ${message.notification!.body}');
+          print('${message.data["click_action"]}');
+
+        }
+
+        LocalNotification.showNotification(message);
 
       }
+    });
+  }else{
+    print("##### ios 플랫폼 #####");
+  }
 
-      LocalNotification.showNotification(message);
-
-    }
-  });
 
 
   runApp(

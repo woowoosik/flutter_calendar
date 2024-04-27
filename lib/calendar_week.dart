@@ -66,7 +66,6 @@ class WeekPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print('@@@@@@@@@@ paint start @@@@@@@@@@@');
     Paint paint = Paint()
       // 색
       ..color = Colors.black12
@@ -76,7 +75,6 @@ class WeekPainter extends CustomPainter {
       ..strokeWidth = 1.0;
 
     var height = size.height.toDouble() / 24;
-    print("%% size  -- ${height}");
 
     for (var i = 0; i < 24; i++) {
       Offset p1 = Offset(0, height * i.toDouble());
@@ -101,10 +99,8 @@ class WeekPainter extends CustomPainter {
 
     var scheduleHeight = size.height.toDouble() / 1440;
 
-    print("-- ${weekDate} -- ");
     var day = getSunDay(weekDate);
 
-    print("%%% 1  $day");
 
     var myCanvas = TouchyCanvas(context, canvas);
 
@@ -113,15 +109,8 @@ class WeekPainter extends CustomPainter {
     for (var i = 1; i < 8; i++) {
       var weekDay = day.add(Duration(days: i - 1));
 
-      print("%%% 2  $weekDay");
-
-      print('%%% 3 ${provider.events[weekDay]}');
-
       if (provider.events[weekDay] != null) {
         for (var schedule in provider.events[weekDay]) {
-          print('start : ${schedule.startTime}   end : ${schedule.endTime}');
-
-          print("%%% ${schedule.content}");
 
           if(colorCnt >= colorList.length-1){
             colorCnt = 0;
@@ -149,37 +138,6 @@ class WeekPainter extends CustomPainter {
             schedulePaint
               ..color = colorList[colorCnt],
             onTapUp: (tapdetail) {
-              print("################################################");
-              print(
-                  "######  ${schedule.startTime} ###############################");
-              print(
-                  "######  ${schedule.endTime} ###############################");
-              print(
-                  "######  ${schedule.content} ###############################");
-              print("######  ${schedule.id} ###############################");
-
-
-
-              print("######  ${schedule.googleMapCheck?.isChecked} ###############################");
-              print("######  ${schedule.googleMapCheck!.googleMapData?.name} ###############################");
-              print("######  ${schedule.googleMapCheck!.googleMapData?.lat} ###############################");
-              print("######  ${schedule.googleMapCheck!.googleMapData?.lng} ###############################");
-              print("######  ${schedule.googleMapCheck!.googleMapData?.formatted_address} ###############################");
-
-           /*   if(schedule.googleMapCheck.googleMapData != null){
-                print("######  ${schedule.googleMapCheck?.googleMapData!.name} ###############################");
-                print("######  ${schedule.googleMapCheck?.googleMapData!.lat} ###############################");
-                print("######  ${schedule.googleMapCheck?.googleMapData!.lng} ###############################");
-                print("######  ${schedule.googleMapCheck?.googleMapData!.formatted_address} ###############################");
-
-              }*/
-
-              print("######  ${schedule.alarm?.isChecked} ###############################");
-              print("######  ${schedule.alarm?.alarmData?.id} ###############################");
-              print("######  ${schedule.alarm?.alarmData?.alarmDate} ###############################");
-              print("######  ${schedule.alarm?.alarmData?.alarmTime} ###############################");
-
-              print("#####################################");
 
               navigator(context, schedule);
             },
@@ -218,38 +176,6 @@ DateTime getSunDay(DateTime d) {
 }
 
 dynamic navigator(BuildContext context, dynamic schedule) {
-
-  print("#################  navigator ###############################");
-  print(
-      "######  ${schedule.startTime} ###############################");
-  print(
-      "######  ${schedule.endTime} ###############################");
-  print(
-      "######  ${schedule.content} ###############################");
-  print("######  ${schedule.id} ###############################");
-
-
-
-  print("######  ${schedule.googleMapCheck?.isChecked} ###############################");
-  print("######  ${schedule.googleMapCheck!.googleMapData?.name} ###############################");
-  print("######  ${schedule.googleMapCheck!.googleMapData?.lat} ###############################");
-  print("######  ${schedule.googleMapCheck!.googleMapData?.lng} ###############################");
-  print("######  ${schedule.googleMapCheck!.googleMapData?.formatted_address} ###############################");
-
-  /*   if(schedule.googleMapCheck.googleMapData != null){
-                print("######  ${schedule.googleMapCheck?.googleMapData!.name} ###############################");
-                print("######  ${schedule.googleMapCheck?.googleMapData!.lat} ###############################");
-                print("######  ${schedule.googleMapCheck?.googleMapData!.lng} ###############################");
-                print("######  ${schedule.googleMapCheck?.googleMapData!.formatted_address} ###############################");
-
-              }*/
-
-  print("######  ${schedule.alarm?.isChecked} ###############################");
-  print("######  ${schedule.alarm?.alarmData?.id} ###############################");
-  print("######  ${schedule.alarm?.alarmData?.alarmDate} ###############################");
-  print("######  ${schedule.alarm?.alarmData?.alarmTime} ###############################");
-
-  print("#####################################");
 
   return Navigator.push(
     context,

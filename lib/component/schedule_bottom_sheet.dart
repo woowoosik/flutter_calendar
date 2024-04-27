@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,11 @@ import 'package:schedule_calendar/google_map/google_map_address.dart';
 import 'package:schedule_calendar/google_map/google_map_model.dart';
 import 'package:schedule_calendar/model/schedule_model.dart';
 import 'package:schedule_calendar/provider/calendar_provider.dart';
+import 'package:schedule_calendar/schedule_page_widget/add_map_widget.dart';
+import 'package:schedule_calendar/schedule_page_widget/date_button_widget.dart';
+import 'package:schedule_calendar/schedule_page_widget/end_time_picker_widget.dart';
+import 'package:schedule_calendar/schedule_page_widget/fcm_alarm_widget.dart';
+import 'package:schedule_calendar/schedule_page_widget/start_time_picker_widget.dart';
 import 'package:schedule_calendar/utils.dart';
 import 'package:uuid/uuid.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -32,6 +38,7 @@ class ScheduleBottomSheet extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
+
   @override
   State<StatefulWidget> createState() {
     return _ScheduleBottomSheet();
@@ -46,7 +53,7 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
   var startTime = TimeOfDay.fromDateTime(DateTime.now());
   var endTime = TimeOfDay.fromDateTime(DateTime.now());
 
-  var _isChecked = false;
+  var alarmChecked = false;
   var alarmDate = DateTime.now().add(Duration(days: 1));
   var alarmTime = TimeOfDay.fromDateTime(DateTime.now());
 
@@ -85,7 +92,106 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                 padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
                 child: Column(
                   children: [
+                    DateButtonWidget(
+                      btnName: '저장',
+                      date: widget.selectedDate,
+                      callback: () {
+                        onSavedPressed(context);
+                      },
+                    ),
+
+                    SizedBox(
+                      height: 20,
+                    ),
+
+                    StartTimePickerWidget(
+                      startTime:startTime,
+                      callback: (value){
+                        print("detail start time picker 전 : ${startTime}");
+                        startTime = value;
+                        print("detail start time picker 후 : ${startTime}");
+
+                      },
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+
+                    EndTimePickerWidget(
+                      endTime: endTime,
+                      callback: (value) {
+                        endTime = value;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+
+                    if(Platform.isAndroid)...[
+                      FcmAlarmWidget(
+                          alarmChecked: alarmChecked,
+                          alarmDate: alarmDate,
+                          alarmTime: alarmTime,
+                          alarmCheckedCallback:(value){
+                            alarmChecked = value;
+                          },
+                          callback: (date, time){
+                            alarmDate = date;
+                            alarmTime = time;
+                          }
+                      ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                    ],
+
                     Padding(
+                      padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      child: Stack(
+                        children: [
+                          const Positioned(
+                            left: 0,
+                            top: 12,
+                            child: Icon(
+                              Icons.notes_rounded,
+                              size: 30.0,
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                            const EdgeInsets.fromLTRB(33.0, 0.0, 0.0, 0.0),
+                            child: TextField(
+                              controller: contentController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: '내용을 입력해주세요.',
+                              ),
+                            ),
+
+                          )
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+
+                    AddMapWidget(
+                      mapData: mapData,
+                      callback: (map) {
+                        print("map call back!! ${map.isChecked}");
+                        print("map call back!! ${map}");
+                        mapData = map;
+                      },
+                    ),
+
+
+                    /* Padding(
                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -94,18 +200,6 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                             onTap: () async {
                               tz.initializeTimeZones();
                               tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
-
-                              // tz.TZDateTime setting = tz.TZDateTime(tz.local, 2024, 4, 6, 16,55,00);
-
-                              /*      var s = FCMController();
-                            var token = await FirebaseMessaging.instance.getToken();
-
-                            s.sendMessage(
-                                userToken: token,
-                                title: '정각.. -4시56분에 보냄',
-                                body: '테스트 text',
-                                timeZone: DateTime(2024,4,7,00,00,00),
-                            );*/
 
                               Navigator.of(context).pop();
                             },
@@ -130,18 +224,6 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                             // 3 저장 버튼
                             onPressed: () async{
                               onSavedPressed(context);
-                              print("startTime : ${startTime}");
-                              print("endTime : ${endTime}");
-
-                              print("alarm check : ${_isChecked}");
-                              print("alarm Date : ${alarmDate}");
-                              print("alarm Time : ${alarmTime}");
-
-                              print("content : ${contentController.text}");
-
-
-                              print("mapdata check : ${mapData.isChecked}");
-                              print("mapdata : ${mapData.googleMapData?.name}");
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: PRIMARY_COLOR,
@@ -157,7 +239,9 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                     SizedBox(
                       height: 20,
                     ),
-                    Padding(
+*/
+
+                  /*  Padding(
                       padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -242,99 +326,106 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                     ),
                     const SizedBox(
                       height: 20,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.alarm_on,
-                                size: 30.0,
+                    ),*/
+                    /*
+                    if(Platform.isAndroid)...[
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.alarm_on,
+                                    size: 30.0,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+
+                                  Visibility(
+                                    visible: !_isChecked,
+                                    child: const Text(
+                                      "푸시알림",
+                                      style: TextStyle(fontSize: 25),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: _isChecked,
+                                    child: Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            final DateTime? dateTime = await showDatePicker(
+                                                context: context,
+                                                initialDate: alarmDate,
+                                                firstDate: DateTime(2000),
+                                                lastDate: DateTime(3000));
+                                            if (dateTime != null) {
+                                              setState(() {
+                                                alarmDate = dateTime;
+                                              });
+                                            }
+                                          },
+                                          child: Text(
+                                            '${alarmDate.year}-${alarmDate.month.toString().padLeft(2, '0')}-${alarmDate.day.toString().padLeft(2, '0')}',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            final TimeOfDay? timeOfDay = await showTimePicker(
+                                              context: context,
+                                              initialTime: alarmTime,
+                                            );
+                                            if (timeOfDay != null) {
+                                              setState(() {
+                                                alarmTime = timeOfDay;
+                                              });
+                                            }
+                                          },
+                                          child: Text(
+                                            '(${alarmTime.hour}:${alarmTime.minute.toString().padLeft(2, '0')})',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+
+
+
+                                ],
                               ),
+
+                              Row(
+                                children: [
+                                  Switch(
+                                    value: _isChecked,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _isChecked = value;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+
                               const SizedBox(
-                                width: 5,
-                              ),
-
-                              Visibility(
-                                visible: !_isChecked,
-                                child: const Text(
-                                  "푸시알림",
-                                  style: TextStyle(fontSize: 25),
-                                ),
-                              ),
-                              Visibility(
-                                visible: _isChecked,
-                                child: Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () async {
-                                        final DateTime? dateTime = await showDatePicker(
-                                            context: context,
-                                            initialDate: alarmDate,
-                                            firstDate: DateTime(2000),
-                                            lastDate: DateTime(3000));
-                                        if (dateTime != null) {
-                                          setState(() {
-                                            alarmDate = dateTime;
-                                          });
-                                        }
-                                      },
-                                      child: Text(
-                                        '${alarmDate.year}-${alarmDate.month.toString().padLeft(2, '0')}-${alarmDate.day.toString().padLeft(2, '0')}',
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        final TimeOfDay? timeOfDay = await showTimePicker(
-                                          context: context,
-                                          initialTime: alarmTime,
-                                        );
-                                        if (timeOfDay != null) {
-                                          setState(() {
-                                            alarmTime = timeOfDay;
-                                          });
-                                        }
-                                      },
-                                      child: Text(
-                                        '(${alarmTime.hour}:${alarmTime.minute.toString().padLeft(2, '0')})',
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                    ),
-
-                                  ],
-                                ),
+                                height: 20,
                               ),
 
 
-
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Switch(
-                                value: _isChecked,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isChecked = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    ],
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                       child: Stack(
@@ -368,7 +459,9 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                     const SizedBox(
                       height: 20,
                     ),
+*/
 
+                /*
                     Padding(
                       padding: EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
                       child: Row(
@@ -392,7 +485,7 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                           ),
                           Row(
                             children: [
-                              /*Switch(
+                              *//*Switch(
                                 value: _isMapChecked,
                                 onChanged: (value) {
                                   setState(() {
@@ -402,7 +495,7 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                                   });
                                 },
                               ),
-                              */
+                              *//*
                               GestureDetector(
                                 onTap: () async {
                                   print("지도 이동");
@@ -432,13 +525,13 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                                                 builder: (context, s ){
                                                   if(s.hasData){
                                                     print("@#@#@@@@#@@# ${s.data} ");
-                                                    /*mapData = GoogleMapData(
+                                                    *//*mapData = GoogleMapData(
                                                     isChecked: false,
                                                     lat: 0.0,
                                                     lng: 0.0,
                                                     name: "",
                                                     formatted_address: "",
-                                                  );*/
+                                                  );*//*
                                                     return GoogleMapAddress(position: s.data, mapData: mapData);
                                                   }else{
                                                     return Scaffold(
@@ -456,7 +549,8 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                                     showToast('위치 서비스를 활성화 해주세요.');
                                   }
 
-
+                                  print("map call back!! ${mapData.isChecked}");
+                                  print("map call back!! ${mapData.googleMapData?.name}");
 
                                   setState(() {
 
@@ -529,7 +623,7 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                         ],
                       ),
                     ),
-
+*/
 
 
                   ],
@@ -542,11 +636,11 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
     );
   }
 
-  Future<Position> getCurrentLocation() async {
+  /*Future<Position> getCurrentLocation() async {
 
     print("지도 이동3");
     var _position = await Geolocator.getCurrentPosition(
-      /*  forceAndroidLocationManager: true,*/
+      *//*  forceAndroidLocationManager: true,*//*
         desiredAccuracy: LocationAccuracy.high
     );
 
@@ -554,9 +648,10 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
     print("지도 이동4 ${_position}");
     return _position ;
   }
+  */
 
   void onSavedPressed(BuildContext context) async {
-    if(!_isChecked || DateTime(alarmDate.year,alarmDate.month,alarmDate.day,alarmTime.hour,alarmTime.minute)
+    if(!alarmChecked || DateTime(alarmDate.year,alarmDate.month,alarmDate.day,alarmTime.hour,alarmTime.minute)
         .isAfter(DateTime.now())){
       var notificationId = ("${Random().nextInt(9999)}${alarmDate.year}${alarmDate.month}${alarmDate.day}${alarmTime.hour}${alarmTime.minute}").hashCode;
       // var notificationId = Uuid().v4().hashCode;
@@ -584,8 +679,8 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
           endTime: end,
           googleMapCheck: mapData,
           alarm: Alarm(
-            isChecked: _isChecked,
-            alarmData: !_isChecked? null: AlarmData(
+            isChecked: alarmChecked,
+            alarmData: !alarmChecked? null: AlarmData(
               id: notificationId,
               alarmDate: int.parse('${alarmDate!.year.toString().padLeft(4, '0')}${alarmDate.month.toString().padLeft(2, '0')}${alarmDate.day.toString().padLeft(2, '0')}'),
               alarmTime: int.parse('${alarmTime!.hour.toString().padLeft(2, '0')}${alarmTime.minute.toString().padLeft(2, '0')}'),
@@ -620,25 +715,28 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
             provider?.addEvent(date, schedule);
 
 
-            var s = FCMController();
-            var token = await FirebaseMessaging.instance.getToken();
+            if (Platform.isAndroid) {
+              var s = FCMController();
+              var token = await FirebaseMessaging.instance.getToken();
 
-            if(_isChecked){
-              s.sendMessage(
-                id: notificationId,
-                userToken: token,
-                title: contentController.text,
-                body: '',
-                timeZone: DateTime(
+              if(alarmChecked){
+                s.sendMessage(
+                  id: notificationId,
+                  userToken: token,
+                  title: contentController.text,
+                  body: '',
+                  timeZone: DateTime(
                     alarmDate.year,
                     alarmDate.month,
                     alarmDate.day,
                     alarmTime.hour,
                     alarmTime.minute,
-                ),
-                delete: false,
-              );
+                  ),
+                  delete: false,
+                );
+              }
             }
+
 
 
             Navigator.of(context).pop();
@@ -679,24 +777,28 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
                   provider?.addEvent(date, schedule);
 
 
-                  var s = FCMController();
-                  var token = await FirebaseMessaging.instance.getToken();
 
-                  if(_isChecked){
-                    s.sendMessage(
-                      id: notificationId,
-                      userToken: token,
-                      title: contentController.text,
-                      body: '',
-                      timeZone: DateTime(
-                          alarmDate.year,
-                          alarmDate.month,
-                          alarmDate.day,
-                          alarmTime.hour,
-                          alarmTime.minute
-                      ),
-                      delete: false,
-                    );
+                  if (Platform.isAndroid) {
+                    var s = FCMController();
+                    var token = await FirebaseMessaging.instance.getToken();
+
+                    if(alarmChecked){
+                      s.sendMessage(
+                        id: notificationId,
+                        userToken: token,
+                        title: contentController.text,
+                        body: '',
+                        timeZone: DateTime(
+                            alarmDate.year,
+                            alarmDate.month,
+                            alarmDate.day,
+                            alarmTime.hour,
+                            alarmTime.minute
+                        ),
+                        delete: false,
+                      );
+                    }
+
                   }
 
 
@@ -744,68 +846,6 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
       return false;
     }
   }
-
-/*
-  void onSavePressed(BuildContext context) async {
-    if (formKey.currentState!.validate()) {
-      // 폼 검증하기
-      formKey.currentState!.save(); // 폼 저장하기
-
-      // 스케줄 모델 생성하기 firebase
-      final schedule = ScheduleModel(
-        id: Uuid().v4(),
-        content: contentController.text!,
-        date: widget.selectedDate,
-        startTime: int.parse('${startTime!.hour.toString().padLeft(2, '0')}${startTime.minute.toString().padLeft(2, '0')}'),
-        endTime: int.parse('${endTime!.hour.toString().padLeft(2, '0')}${endTime.minute.toString().padLeft(2, '0')}'),
-
-      );
-
-      // 스케쥴 모델 파이어스토어에 삽입하기
-      await FirebaseFirestore.instance
-          .collection(
-            'schedule',
-          )
-          .doc(schedule.id)
-          .set(schedule.toJson());
-
-      var dateTime = DateTime.utc(widget.selectedDate.year,
-          widget.selectedDate.month, widget.selectedDate.day);
-      print("${dateTime}  ${schedule}");
-      provider?.addEvent(dateTime, schedule);
-
-      Navigator.of(context).pop(); // 일정 생성 후 화면 뒤로 가기
-    }
-  }
-
-  // 시간값 검증
-  String? timeValidator(String? val) {
-    if (val == null) {
-      return '값을 입력해주세요';
-    }
-
-    int? number;
-
-    try {
-      number = int.parse(val);
-    } catch (e) {
-      return '숫자를 입력해주세요.';
-    }
-*//*
-    if(number < 0 || number> 24){
-      return '0시부터 24시 사이를 입력해주세요.';
-    }*//*
-
-    return null;
-  }
-
-  // 내용값 검증
-  String? contentValidator(String? val) {
-    if (val == null || val.length == 0) {
-      return '값을 입력해주세요.';
-    }
-    return null;
-  }*/
 
 
 }

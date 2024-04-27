@@ -47,17 +47,6 @@ class _mainCalendar extends State<MainCalendar>{
 
   _mainCalendar(this.onDaySelected, this.selectedDate, this.onFormatChanged, this.onPageChanged);
 
-/*  Map<DateTime, List<String>> events = {
-    DateTime.utc(2024,3,25) : [  ('title'),  ('title2') , ('title'),  ('title2'), ('title'),('title'),  ('title2') , ('title'),  ('title2'), ('title'),  ],
-    DateTime.utc(2024,3,14) : [  ('title3') ],
-  };*/
-
-  /*List<dynamic> _getEventsForDay(DateTime day) {
-    return widget.events[day] ?? [];
-  }*/
-
-
-
 
   @override
   Widget build(BuildContext context) {

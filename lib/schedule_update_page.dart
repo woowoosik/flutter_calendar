@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+/*
 
 class ScheduleUpdatePage extends StatefulWidget{
 
@@ -8,7 +9,6 @@ class ScheduleUpdatePage extends StatefulWidget{
   var schedule;
 
   ScheduleUpdatePage({Key? key, required this.startTime, required this.endTime, required this.schedule});
-
 
   @override
   State<StatefulWidget> createState() {
@@ -57,7 +57,6 @@ class _ScheduleUpdatePage extends State<ScheduleUpdatePage>{
                       style: TextStyle(fontSize: 40),
                     ),
                   ),
-
                   GestureDetector(
                     onTap: () async {
                       final TimeOfDay? timeOfDay = await showTimePicker(
@@ -94,3 +93,4 @@ class _ScheduleUpdatePage extends State<ScheduleUpdatePage>{
   }
 }
 
+*/

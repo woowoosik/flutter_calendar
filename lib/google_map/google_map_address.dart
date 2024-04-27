@@ -16,7 +16,6 @@ import 'package:schedule_calendar/google_map/kakao_model.dart';
 import 'package:schedule_calendar/model/schedule_model.dart';
 import 'package:http/http.dart' as http;
 
-enum Search { keyword, address }
 
 class GoogleMapAddress extends StatefulWidget {
 
@@ -37,7 +36,6 @@ class GoogleMapAddress extends StatefulWidget {
 
 class _GoogleMapAddress extends State<GoogleMapAddress> {
   bool _isChecked = false;
-  Search _search = Search.keyword;
 
   int selectedOption = 1;
 
@@ -50,29 +48,6 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
 
   var name="";
   late var address;
-
-
-/*
-
-  Future<Position> getCurrentLocation() async {
-    checkPermission();
-      //focusLocation = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-
-    var _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-*/
-/*
-    print(" !!!!!!!!! 1 11  ${position}");
-    if(position == null ){
-      print(" !!!!!!!!! if  ${position}");
-      position = _position;
-    }
-    print(" !!!!!!!!!2222  ${position}");*//*
-
-
-    return _position ;
-  }
-
-*/
 
   @override
   void initState() {
@@ -111,7 +86,7 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
                           maxLines: null,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
-                            hintText: '내용을 입력해주세요.',
+                            hintText: '키워드를 입력해주세요.',
                           ),
                           onSubmitted: (value){
                             getKeywordData();
@@ -133,7 +108,7 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
                   ],
                 ),
               ),
-              Padding(
+             /* Padding(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 5),
                 child: Row(
                   children: [
@@ -167,7 +142,7 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
                     ),
                   ],
                 ),
-              ),
+              ),*/
               Expanded(
                 child: GoogleMapPage(lat: focusLocation.latitude, lng: focusLocation.longitude),
               ),
@@ -199,6 +174,7 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
                         if(name == ""){
                           showToast("위치를 검색해주세요.");
                         }else{
+                          print("map call back address : ${name}");
                           Navigator.pop(
                             context,
                             GoogleMapCheck(
@@ -320,7 +296,6 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
     }
 */
 
-
   }
 
 
@@ -332,7 +307,61 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: ListView.separated(
+        content: SingleChildScrollView(
+          child: Column(
+            children: [
+
+              for(var index = 0; index<count; index++)...[
+                GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      focusLocation = LatLng(
+                        double.parse(list[index].y),
+                        double.parse(list[index].x),
+                      );
+                      print("focus Location : ${focusLocation}");
+
+                      name = list[index].placeName;
+                      address = list[index].roadAddressName ==""
+                          ? list[index].addressName
+                          : list[index].roadAddressName;
+
+                    });
+
+                    Navigator.of(context).pop();
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "${list[index].placeName}",
+                        style: const TextStyle(
+                            color: DARK_PRIMARY_COLOR,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        "${list[index].roadAddressName ==""
+                            ? list[index].addressName
+                            : list[index].roadAddressName}",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ]
+
+            ],
+          ),
+        ),
+
+
+
+
+        /*
+        ListView.separated(
           itemCount: count!,
           itemBuilder: (BuildContext context, int index){
             return Container(
@@ -355,6 +384,7 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
                   Navigator.of(context).pop();
                 },
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       "${list[index].placeName}",
@@ -374,9 +404,6 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
                   ],
                 ),
               ),
-
-
-
             );
           },
           separatorBuilder: (BuildContext context, int index) =>
@@ -384,6 +411,11 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
             color: Colors.grey,
           ),
         ),
+
+*/
+
+
+
       ),
     );
   }
@@ -454,7 +486,7 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
 
 }
 
-
+/*
 
 Future<bool> checkPermission() async {
 
@@ -488,4 +520,4 @@ Future<bool> checkPermission() async {
 
   // return '위치 권한이 허용되었습니다.';
   return true;
-}
+}*/
