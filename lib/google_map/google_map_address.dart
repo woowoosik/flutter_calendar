@@ -149,7 +149,7 @@ class _GoogleMapAddress extends State<GoogleMapAddress> {
 
 
               Padding(
-                padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                padding: EdgeInsets.all(15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:schedule_calendar/calendar_week.dart';
 import 'package:schedule_calendar/fcm/forground_notification.dart';
 import 'package:schedule_calendar/login/login_page.dart';
+import 'package:schedule_calendar/login/text_field_widget.dart';
 import 'package:schedule_calendar/provider/calendar_provider.dart';
 import 'package:schedule_calendar/schedule_detail_page.dart';
 import 'package:schedule_calendar/utils.dart';
@@ -26,6 +27,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late var provider;
+
+
+  var root = FirebaseAuth.instance.currentUser!.uid;
 
   DateTime selectedDate = DateTime.utc(
     DateTime.now().year,
@@ -66,6 +70,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     provider = Provider.of<CalendarProvider>(context);
 
     const List<String> list = <String>['로그아웃', '탈퇴하기'];
+
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.small(
@@ -508,7 +513,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
+/*
   Widget textWidget(String hint, Widget icon, dynamic controller){
     return Container(
       decoration: const ShapeDecoration(
@@ -534,6 +539,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           border: InputBorder.none,
           hintStyle: TextStyle(color: Colors.black26),
         ),
+        obscureText: hint=='이메일을 입력해주세요.'? false : true,
         keyboardType: TextInputType.text,
         onSubmitted: (value){
           // login();
@@ -542,7 +548,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       ),
 
     );
-  }
+  }*/
 
   Future<bool> emailCheck() async{
 
@@ -560,9 +566,46 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              textWidget('이메일을 입력해주세요.', const Icon(Icons.email_outlined), emailController),
+              //textWidget('이메일을 입력해주세요.', const Icon(Icons.email_outlined), emailController),
+              TextFieldWidget(
+                password: false,
+                hint: '이메일을 입력해주세요.',
+                icon: const Icon(Icons.email_outlined),
+                controller: emailController,
+                callback: () async {
+                  print("${emailController.text}   ${passwordController.text}");
+                /*  result = await userRecertification(emailController.text, passwordController.text);
+                  if(result){
+                    result = true;
+                    Navigator.of(context).pop(); //창 닫기
+                  }else{
+                    Fluttertoast.showToast(
+                        msg: '이메일, 비밀번호가 틀렸습니다.', gravity: ToastGravity.CENTER, toastLength: Toast.LENGTH_SHORT);
+                  }*/
+
+                  result = await deleteEmail(emailController.text, passwordController.text);
+                },
+              ),
               SizedBox(height: 5,),
-              textWidget('비밀번호를 입력해주세요.', const Icon(Icons.lock_outline_rounded), passwordController),
+              //textWidget('비밀번호를 입력해주세요.', const Icon(Icons.lock_outline_rounded), passwordController),
+              TextFieldWidget(
+                password: true,
+                hint: '비밀번호를 입력해주세요.',
+                icon: const Icon(Icons.lock_outline_rounded),
+                controller: passwordController,
+                callback: () async {
+                  print("${emailController.text}   ${passwordController.text}");
+                  /*result = await userRecertification(emailController.text, passwordController.text);
+                  if(result){
+                    result = true;
+                    Navigator.of(context).pop(); //창 닫기
+                  }else{
+                    Fluttertoast.showToast(
+                        msg: '이메일, 비밀번호가 틀렸습니다.', gravity: ToastGravity.CENTER, toastLength: Toast.LENGTH_SHORT);
+                  }*/
+                  result = await deleteEmail(emailController.text, passwordController.text);
+                },
+              ),
 
             ],
           ),
@@ -574,16 +617,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                   backgroundColor: PRIMARY_COLOR,
                 ),
                 onPressed: () async {
-                  print("${emailController.text}  ${passwordController.text}");
-                  result = await userRecertification(emailController.text, passwordController.text);
-                  print("result ! : ${result}");
-                  if(result){
-                    result = true;
-                    Navigator.of(context).pop(); //창 닫기
-                  }else{
-                    Fluttertoast.showToast(
-                        msg: '이메일, 비밀번호가 틀렸습니다.', gravity: ToastGravity.CENTER, toastLength: Toast.LENGTH_SHORT);
-                  }
+                  result = await deleteEmail(emailController.text, passwordController.text);
                 },
                 child: Text(
                     "확인",
@@ -617,11 +651,23 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
     );
 
-
-    print("result !2 : ${result}");
-
     return result;
   }
+
+
+  Future<bool> deleteEmail(String email, String password) async {
+    var result = await userRecertification(email, password);
+    if(result){
+      result = true;
+      Navigator.of(context).pop(); //창 닫기
+    }else{
+      Fluttertoast.showToast(
+          msg: '이메일, 비밀번호가 틀렸습니다.', gravity: ToastGravity.CENTER, toastLength: Toast.LENGTH_SHORT);
+    }
+
+    return result ;
+  }
+
 
   void userDelete() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -689,7 +735,10 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           email: str,
           password: password)
           .then((value) => {
-            bool = true
+            if(root == value.user?.uid){
+              bool = true
+            }
+            // bool = true
           });
     } catch (e) {
       return false;

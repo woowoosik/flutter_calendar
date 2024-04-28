@@ -9,6 +9,7 @@ import 'package:schedule_calendar/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schedule_calendar/login/log_utils.dart';
 import 'package:schedule_calendar/login/sign_in_page.dart';
+import 'package:schedule_calendar/login/text_field_widget.dart';
 
 class LoginPage extends StatefulWidget{
 
@@ -34,6 +35,7 @@ class _LoginPage extends State<LoginPage>{
 
     print("@@@@ ${getUser()}");
     widget.userUid = getUser()?.uid;
+
 
    /*
      위 코드를 통해 문제가 해결되는 이유는 addPostFrameCallback을 통해 build가 끝나고
@@ -68,9 +70,23 @@ class _LoginPage extends State<LoginPage>{
 
                       SizedBox(height: 40,),
 
-                      textWidget('이메일을 입력해주세요.', const Icon(Icons.email_outlined), widget.idController),
+                      //textWidget('이메일을 입력해주세요.', const Icon(Icons.email_outlined), widget.idController),
+                      TextFieldWidget(
+                          password: false,
+                          hint: '이메일을 입력해주세요.',
+                          icon: const Icon(Icons.email_outlined),
+                          controller: widget.idController,
+                          callback: (){ login(); },
+                      ),
                       SizedBox(height: 10,),
-                      textWidget('비밀번호를 입력해주세요.', const Icon(Icons.lock_outline_rounded), widget.passwordController),
+                      //textWidget('비밀번호를 입력해주세요.', const Icon(Icons.lock_outline_rounded), widget.passwordController),
+                      TextFieldWidget(
+                        password: true,
+                        hint: '비밀번호를 입력해주세요.',
+                        icon: const Icon(Icons.lock_outline_rounded),
+                        controller: widget.passwordController,
+                        callback: (){ login(); },
+                      ),
                       SizedBox(height: 30,),
 
                       ElevatedButton(
@@ -81,7 +97,7 @@ class _LoginPage extends State<LoginPage>{
                           onPressed: () async {
                             login();
                           },
-                          child: Text(
+                          child: const Text(
                             "로그인",
                             style: TextStyle(
                               color: LOGIN_TEXT_COLOR,
@@ -97,7 +113,7 @@ class _LoginPage extends State<LoginPage>{
                             signInPage(context);
                           },
 
-                          child: Text(
+                          child: const Text(
                             "가입하기",
                             style: TextStyle(
                               color: LOGIN_TEXT_COLOR,
@@ -198,6 +214,7 @@ class _LoginPage extends State<LoginPage>{
   }
 
   Future<void> login() async {
+
     CircularProgressIndicator();
     try {
       await FirebaseAuth.instance
@@ -208,6 +225,8 @@ class _LoginPage extends State<LoginPage>{
     } catch (e) {
       showToast("아이디와 비밀번호를 확인해주세요");
     }
+
+
   }
 
 
@@ -236,6 +255,7 @@ class _LoginPage extends State<LoginPage>{
   }
 
 
+/*
 
   Widget textWidget(String hint, Widget icon, dynamic controller){
     return Container(
@@ -262,6 +282,7 @@ class _LoginPage extends State<LoginPage>{
           border: InputBorder.none,
           hintStyle: TextStyle(color: Colors.black26),
         ),
+        obscureText: hint=='이메일을 입력해주세요.'? false : true,
         keyboardType: TextInputType.text,
         onSubmitted: (value){
           login();
@@ -269,6 +290,9 @@ class _LoginPage extends State<LoginPage>{
       ),
     );
   }
+
+
+*/
 
 
 

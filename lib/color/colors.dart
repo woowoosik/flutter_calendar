@@ -16,15 +16,10 @@ const SIGNIN_BUTTON_COLOR = Color(0xffc1aff6);
 
 const LOGIN_TEXT_COLOR = Color(0xffededef);
 
-
-
 const SEASON_COLOR_01 = Color(0xb3f1d2ea);
 const SEASON_COLOR_02 = Color(0xb3e3f3dd);
 const SEASON_COLOR_03 = Color(0xb3eac8a9);
 const SEASON_COLOR_04 = Color(0xb3d2e6ef);
-
-
-
 
 const SEASON_COLOR_TEXT_01 = Color(0xb3602753);
 const SEASON_COLOR_TEXT_02 = Color(0xb3365b25);

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:schedule_calendar/color/colors.dart';
+/*
 
 class CustomTextField extends StatelessWidget{
   final String label;
@@ -58,6 +59,7 @@ class CustomTextField extends StatelessWidget{
 
 
 
+*/
 
 
 /*

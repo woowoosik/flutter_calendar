@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:schedule_calendar/component/schedule_bottom_sheet.dart';
 import 'package:schedule_calendar/login/login_page.dart';
+
 
 
 var logger;
@@ -167,5 +171,6 @@ Future<void> sendPasswordResetEmail(String email) async{
   await FirebaseAuth.instance.setLanguageCode("kr");
   await FirebaseAuth.instance.sendPasswordResetEmail(email:email);
 }
+
 
 

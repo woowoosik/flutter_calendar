@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,8 @@ class ScheduleDetailPage extends StatefulWidget{
 }
 
 class _ScheduleDetailPage extends State<ScheduleDetailPage>{
+
+  var root = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
@@ -701,8 +704,6 @@ class _ScheduleDetailPage extends State<ScheduleDetailPage>{
         var start = int.parse('${widget.startTime!.hour.toString().padLeft(2, '0')}${widget.startTime.minute.toString().padLeft(2, '0')}');
         var end = int.parse('${widget.endTime!.hour.toString().padLeft(2, '0')}${widget.endTime.minute.toString().padLeft(2, '0')}');
 
-        showToast("${start}  ${end}");
-
         var date = DateTime.utc(widget.schedule.date.year,
             widget.schedule.date.month, widget.schedule.date.day);
 
@@ -729,6 +730,8 @@ class _ScheduleDetailPage extends State<ScheduleDetailPage>{
           var length = event[date].length;
           for (var i=0; i < length; i++) {
             var data = event[date][i] as ScheduleModel;
+
+
 
             if (data.startTime < start && start < data.endTime) {
               showToast('저장하려는 시간에 스케줄이 있어요!');

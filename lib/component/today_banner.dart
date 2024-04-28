@@ -5,8 +5,8 @@ import 'package:schedule_calendar/color/colors.dart';
 class TodayBanner extends StatelessWidget{
   final DateTime selectedDate;
   final int count;
-
   final DateTime weekDate;
+
   const TodayBanner({Key? key, required this.selectedDate, required this.count, required this.weekDate}):super(key: key);
 
 
@@ -45,7 +45,6 @@ class TodayBanner extends StatelessWidget{
                   textAlign: TextAlign.center,
                   style: textStyle,
                 ),
-
               ],
             ),
           ),
@@ -80,6 +79,7 @@ Color color(int month){
     return SEASON_COLOR_04;
   }
 }
+
 Color textColor(int month){
   if(3<= month && month <=5){
     return SEASON_COLOR_TEXT_01;

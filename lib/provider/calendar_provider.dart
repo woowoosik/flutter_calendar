@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class CalendarProvider extends ChangeNotifier{
@@ -37,11 +38,6 @@ class CalendarProvider extends ChangeNotifier{
     print("!! ${events}");
   }
 
-
-
-  void reBuild(){
-    notifyListeners();
-  }
 
 
 

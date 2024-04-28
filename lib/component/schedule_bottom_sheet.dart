@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,8 @@ class ScheduleBottomSheet extends StatefulWidget {
 class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
     with TickerProviderStateMixin {
   final GlobalKey<FormState> formKey = GlobalKey();
+
+  var root = FirebaseAuth.instance.currentUser!.uid;
 
   late var provider;
   var startTime = TimeOfDay.fromDateTime(DateTime.now());
@@ -666,7 +669,7 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
         var start = int.parse('${startTime!.hour.toString().padLeft(2, '0')}${startTime.minute.toString().padLeft(2, '0')}');
         var end = int.parse('${endTime!.hour.toString().padLeft(2, '0')}${endTime.minute.toString().padLeft(2, '0')}');
 
-        showToast("${start}  ${end}");
+       // showToast("${start}  ${end}");
 
         var date = DateTime.utc(widget.selectedDate.year,
             widget.selectedDate.month, widget.selectedDate.day);
@@ -695,7 +698,7 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
         if (event[date] == null || event[date].isEmpty) {
 
           print("데이터 없음 저장하기");
-          showToast('저장하기 ${root}');
+        //  showToast('저장하기 ${root}');
 
           // 스케쥴 모델 파이어스토어에 삽입하기
          /* await FirebaseFirestore.instance

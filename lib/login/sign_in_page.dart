@@ -6,6 +6,7 @@ import 'package:schedule_calendar/component/schedule_bottom_sheet.dart';
 import 'package:schedule_calendar/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schedule_calendar/login/log_utils.dart';
+import 'package:schedule_calendar/login/text_field_widget.dart';
 
 class SignInPage extends StatefulWidget{
 
@@ -49,9 +50,39 @@ class _SignInPage extends State<SignInPage>{
                     ),
                     SizedBox(height: 40,),
 
-                    textWidget('사용할 이메일을 입력해주세요.', const Icon(Icons.email_outlined), widget.idController),
+                    //textWidget('사용할 이메일을 입력해주세요.', const Icon(Icons.email_outlined), widget.idController),
+                    TextFieldWidget(
+                        password: false,
+                        hint: '사용할 이메일을 입력해주세요.',
+                        icon: const Icon(Icons.email_outlined),
+                        controller: widget.idController,
+                        callback: () async {
+                          CircularProgressIndicator();
+                          if (await createUser(
+                              widget.idController.text,
+                              widget.passwordController.text
+                          )) {
+                            navigator(context);
+                          }
+                        },
+                    ),
                     SizedBox(height: 10,),
-                    textWidget('사용할 비밀번호를 입력해주세요.', const Icon(Icons.lock_outline_rounded), widget.passwordController),
+                   // textWidget('사용할 비밀번호를 입력해주세요.', const Icon(Icons.lock_outline_rounded), widget.passwordController),
+                    TextFieldWidget(
+                      password: true,
+                      hint: '사용할 비밀번호를 입력해주세요.',
+                      icon: const Icon(Icons.lock_outline_rounded),
+                      controller: widget.passwordController,
+                      callback: () async {
+                        CircularProgressIndicator();
+                        if (await createUser(
+                            widget.idController.text,
+                            widget.passwordController.text
+                        )) {
+                          navigator(context);
+                        }
+                      },
+                    ),
                     SizedBox(height: 30,),
 
                     ElevatedButton(
@@ -139,9 +170,6 @@ class _SignInPage extends State<SignInPage>{
 */
 
   void navigator(BuildContext context){
-
-    // widget.userUid = getUser()!.uid;
-
     Navigator.pushAndRemoveUntil(
         context,
         PageRouteBuilder(
@@ -163,10 +191,9 @@ class _SignInPage extends State<SignInPage>{
               HomePage(),
         ), (route) => false
     );
-
-
   }
 
+/*
 
   Widget textWidget(String hint, Widget icon, dynamic controller){
     return Container(
@@ -193,13 +220,12 @@ class _SignInPage extends State<SignInPage>{
           border: InputBorder.none,
           hintStyle: TextStyle(color: Colors.black26),
         ),
+        obscureText: hint=='사용할 이메일을 입력해주세요.'? false : true,
         keyboardType: TextInputType.text,
         onSubmitted: (value) async {
           CircularProgressIndicator();
           if(await createUser(widget.idController.text, widget.passwordController.text)){
             navigator(context);
-          }else{
-            showToast("가입실패");
           }
         },
 
@@ -208,6 +234,7 @@ class _SignInPage extends State<SignInPage>{
     );
   }
 
+*/
 
 
 

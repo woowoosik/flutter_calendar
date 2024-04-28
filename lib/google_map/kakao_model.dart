@@ -1,6 +1,6 @@
 
 import 'dart:io';
-
+/*
 class KakaoKeywordModel {
 
   List<Place>? documents;        // 검색 결과
@@ -18,7 +18,7 @@ class KakaoKeywordModel {
     return data;
   }
 
-}
+}*/
 /*
 
 class Meta{

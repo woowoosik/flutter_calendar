@@ -9,7 +9,7 @@ import 'package:schedule_calendar/login/login_page.dart';
 //const root = "schedule";
 // var uid = LoginPage().userUid;
 
-final root = FirebaseAuth.instance.currentUser!.uid;
+// final root = LoginPage().userUid;
 
 
 /*
