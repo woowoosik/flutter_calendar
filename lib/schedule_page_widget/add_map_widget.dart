@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:schedule_calendar/color/colors.dart';
 import 'package:schedule_calendar/component/schedule_bottom_sheet.dart';
@@ -8,11 +9,9 @@ import 'package:schedule_calendar/google_map/google_map_address.dart';
 import 'package:schedule_calendar/model/schedule_model.dart';
 
 
-
-
 typedef Callback = void Function(GoogleMapCheck);
 
-class AddMapWidget extends StatefulWidget{
+class AddMapWidget extends StatefulWidget {
 
   GoogleMapCheck mapData;
 
@@ -27,12 +26,11 @@ class AddMapWidget extends StatefulWidget{
   }
 }
 
-class _AddMapWidget extends State<AddMapWidget>{
+class _AddMapWidget extends State<AddMapWidget> {
 
 
   @override
   Widget build(BuildContext context) {
-
     var mapData = widget.mapData;
 
     return Column(
@@ -63,11 +61,11 @@ class _AddMapWidget extends State<AddMapWidget>{
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      if(await checkPermission()){
+                      if (await checkPermission()) {
                         mapData = await Navigator.push(context,
                           PageRouteBuilder(
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
                                 return SlideTransition(
                                   position: Tween<Offset>(
                                     begin: const Offset(1, 0),
@@ -81,17 +79,20 @@ class _AddMapWidget extends State<AddMapWidget>{
                                   child: child,
                                 );
                               },
-                              pageBuilder: (context, animation, secondaryAnimation) {
+                              pageBuilder: (context, animation,
+                                  secondaryAnimation) {
                                 //var position = getCurrentLocation();
                                 return FutureBuilder(
                                     future: getCurrentLocation(),
-                                    builder: (context, s ){
-                                      if(s.hasData){
-                                        return GoogleMapAddress(position: s.data, mapData: widget.mapData);
-                                      }else{
+                                    builder: (context, s) {
+                                      if (s.hasData) {
+                                        return GoogleMapAddress(
+                                            position: s.data,
+                                            mapData: widget.mapData);
+                                      } else {
                                         return const Scaffold(
                                           body: Center(
-                                              child: CircularProgressIndicator(),
+                                            child: CircularProgressIndicator(),
                                           ),
                                         );
                                       }
@@ -100,8 +101,7 @@ class _AddMapWidget extends State<AddMapWidget>{
                               }
                           ),
                         );
-
-                      }else{
+                      } else {
                         showToast('위치 서비스를 활성화 해주세요.');
                       }
 
@@ -131,49 +131,60 @@ class _AddMapWidget extends State<AddMapWidget>{
 
         Visibility(
           visible: widget.mapData.isChecked,
-          child: Column(
-            children: [
-              Text(
-                "${widget.mapData.googleMapData?.name}",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  "${widget.mapData.googleMapData?.name}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
-              ),
-              Stack(
-                children: [
-                  Container(
-                    width: 300,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: GoogleMapPage(
-                      lat: widget.mapData.googleMapData?.lat ?? 0,
-                      lng: widget.mapData.googleMapData?.lng ?? 0,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 20,
                   ),
-                  IconButton(
-                    onPressed: (){
-                      setState(() {
-                        var map =GoogleMapCheck(
-                          isChecked: false,
-                          googleMapData: null,
-                        );
-                        widget.mapData = map;
-                        widget.callback.call(map);
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.cancel_outlined,
-                      color: Colors.pink,
-                    ),
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: (MediaQuery.of(context).size.width * 0.9) * 0.6,
+                        child: GoogleMapPage(
+                          lat: widget.mapData.googleMapData?.lat ?? 0,
+                          lng: widget.mapData.googleMapData?.lng ?? 0,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            var map = GoogleMapCheck(
+                              isChecked: false,
+                              googleMapData: null,
+                            );
+                            widget.mapData = map;
+                            widget.callback.call(map);
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.cancel_outlined,
+                          color: Colors.pink,
+                        ),
+                      )
+
+
+                    ],
                   ),
-                ],
-              ),
-            ],
+
+
+                ),
+
+              ],
+            ),
           ),
+
+
         ),
 
       ],
@@ -184,18 +195,18 @@ class _AddMapWidget extends State<AddMapWidget>{
 
 
 Future<Position> getCurrentLocation() async {
-  var _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  var _position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high);
 
-  return _position ;
+  return _position;
 }
 
 
 Future<bool> checkPermission() async {
-
   // 위치권한에 대한 서비스기능을 사용할 수 있는지 ?
   final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
-  if(!isLocationEnabled){
+  if (!isLocationEnabled) {
     //return '위치 서비스를 활성화 해주세요';
     return false;
   }
@@ -204,18 +215,18 @@ Future<bool> checkPermission() async {
   LocationPermission checkedPermission = await Geolocator.checkPermission();
 
   // 위치권한 denied 상태일때 (권한 허용이 안되었지만 요청은 할 수 있는 상태)
-  if(checkedPermission == LocationPermission.denied){
+  if (checkedPermission == LocationPermission.denied) {
     checkedPermission = await Geolocator.requestPermission(); // 권한 요청
 
     //권한 요청 후 또 다시 거부한 경우
-    if(checkedPermission == LocationPermission.denied){
+    if (checkedPermission == LocationPermission.denied) {
       // return '위치 권한을 허가해주세요';
       return false;
     }
   }
 
   // deniedForever상태인 경우 -> 기기 환경설정 위치설정에서 허가해주어야 함
-  if(checkedPermission == LocationPermission.deniedForever) {
+  if (checkedPermission == LocationPermission.deniedForever) {
     // return '앱의 위치 권한을 기기 세팅에서 허가해주세요';
     return false;
   }

@@ -238,6 +238,11 @@ class _ScheduleDetailPage extends State<ScheduleDetailPage> {
   }
 
   void onSavedPressed(BuildContext context) async {
+
+    if( Platform.isIOS){
+      widget.alarmChecked = false;
+    }
+
     if (!widget.alarmChecked ||
         DateTime(
                 widget.alarmDate.year,

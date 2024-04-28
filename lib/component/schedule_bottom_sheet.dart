@@ -177,6 +177,11 @@ class _ScheduleBottomSheet extends State<ScheduleBottomSheet>
   }
 
   void onSavedPressed(BuildContext context) async {
+
+    if( Platform.isIOS){
+      alarmChecked = false;
+    }
+
     if (!alarmChecked ||
         DateTime(alarmDate.year, alarmDate.month, alarmDate.day, alarmTime.hour,
                 alarmTime.minute)

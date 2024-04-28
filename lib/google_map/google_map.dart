@@ -43,6 +43,7 @@ class _GoogleMapPage extends State<GoogleMapPage>{
     }
 
     return Scaffold(
+
      body: GoogleMap(
        onMapCreated: (controller) {
          setState(() {
