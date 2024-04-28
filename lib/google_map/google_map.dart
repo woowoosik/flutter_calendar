@@ -28,8 +28,6 @@ class _GoogleMapPage extends State<GoogleMapPage>{
   @override
   Widget build(BuildContext context) {
 
-    print("@ @ location : ${widget.lat}  ${widget.lng}");
-
     Marker marker = Marker(
       markerId: MarkerId('위치'),
       position: LatLng(widget.lat, widget.lng),
@@ -41,15 +39,12 @@ class _GoogleMapPage extends State<GoogleMapPage>{
 
     );
     if(_googleMapController != null){
-      print("@ @ location _googleMapController : ${widget.lat}  ${widget.lng}");
       _googleMapController!.moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
     }
 
-   // _googleMapController!.moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
     return Scaffold(
      body: GoogleMap(
        onMapCreated: (controller) {
-         print("@ @ location onMapCreated : ${widget.lat}  ${widget.lng}");
          setState(() {
            _googleMapController = controller;
          });

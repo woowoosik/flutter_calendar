@@ -69,7 +69,6 @@ class LocalNotification {
 
     tz.TZDateTime schedule = tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5));
 
-    print("alarm  ${message.data['delete_alarm']}  ${ararm} ");
 
     if(!bool.parse(message.data['delete_alarm'])){
       _notiPlugin.zonedSchedule(

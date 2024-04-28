@@ -7,7 +7,6 @@ import 'package:schedule_calendar/model/schedule_model.dart';
 import 'package:schedule_calendar/provider/calendar_provider.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:schedule_calendar/schedule_detail_page.dart';
-import 'package:schedule_calendar/schedule_update_page.dart';
 import 'package:touchable/touchable.dart';
 
 class CalendarWeek extends StatefulWidget {

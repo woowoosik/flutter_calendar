@@ -39,7 +39,7 @@ class _AddMapWidget extends State<AddMapWidget>{
       children: [
 
         Padding(
-          padding: EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
+          padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -89,7 +89,7 @@ class _AddMapWidget extends State<AddMapWidget>{
                                       if(s.hasData){
                                         return GoogleMapAddress(position: s.data, mapData: widget.mapData);
                                       }else{
-                                        return Scaffold(
+                                        return const Scaffold(
                                           body: Center(
                                               child: CircularProgressIndicator(),
                                           ),
@@ -106,14 +106,12 @@ class _AddMapWidget extends State<AddMapWidget>{
                       }
 
                       setState(() {
-                        print("map call back! ${mapData.isChecked}");
-                        print("map call back! ${mapData}");
                         widget.mapData = mapData;
                         widget.callback.call(mapData);
                       });
                     },
                     child: Container(
-                      child: Text(
+                      child: const Text(
                         '지도',
                         style: TextStyle(
                             fontSize: 20,
@@ -137,7 +135,7 @@ class _AddMapWidget extends State<AddMapWidget>{
             children: [
               Text(
                 "${widget.mapData.googleMapData?.name}",
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),

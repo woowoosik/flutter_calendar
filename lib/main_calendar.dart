@@ -10,9 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:schedule_calendar/color/colors.dart';
 import 'package:schedule_calendar/model/schedule_model.dart';
 
-
-class MainCalendar extends StatefulWidget{
-
+class MainCalendar extends StatefulWidget {
   final OnDaySelected onDaySelected;
   final DateTime selectedDate;
   var onFormatChanged;
@@ -20,22 +18,26 @@ class MainCalendar extends StatefulWidget{
 
   var getEventsForDay;
 
-
   var colorCnt = 0;
 
-  MainCalendar({required this.getEventsForDay, required this.onDaySelected, required this.selectedDate, required this.onFormatChanged, required this.onPageChanged});
+  MainCalendar(
+      {required this.getEventsForDay,
+      required this.onDaySelected,
+      required this.selectedDate,
+      required this.onFormatChanged,
+      required this.onPageChanged});
 
   @override
   State<StatefulWidget> createState() {
-    return _mainCalendar(onDaySelected, selectedDate, onFormatChanged, onPageChanged);
+    return _mainCalendar(
+        onDaySelected, selectedDate, onFormatChanged, onPageChanged);
   }
 }
 
-class _mainCalendar extends State<MainCalendar>{
-
-
+class _mainCalendar extends State<MainCalendar> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
+
   // DateTime? _selectedDay;
 
   OnDaySelected onDaySelected;
@@ -43,10 +45,8 @@ class _mainCalendar extends State<MainCalendar>{
   var onFormatChanged;
   var onPageChanged;
 
-
-
-  _mainCalendar(this.onDaySelected, this.selectedDate, this.onFormatChanged, this.onPageChanged);
-
+  _mainCalendar(this.onDaySelected, this.selectedDate, this.onFormatChanged,
+      this.onPageChanged);
 
   @override
   Widget build(BuildContext context) {
@@ -54,45 +54,40 @@ class _mainCalendar extends State<MainCalendar>{
       locale: 'ko_kr',
       firstDay: DateTime.utc(1900, 1, 1),
       lastDay: DateTime.utc(2100, 12, 31),
-
       calendarStyle: const CalendarStyle(
         // today 표시 여부
-        isTodayHighlighted : true,
+        isTodayHighlighted: true,
 
         // today 글자 조정
-        todayTextStyle : TextStyle(
-          color: DARK_PRIMARY_COLOR,
-          fontWeight: FontWeight.bold
-        ),
+        todayTextStyle:
+            TextStyle(color: DARK_PRIMARY_COLOR, fontWeight: FontWeight.bold),
 
         // today 모양 조정
-        todayDecoration : BoxDecoration(
+        todayDecoration: BoxDecoration(
           color: transparent,
           shape: BoxShape.circle,
         ),
 
         // selectedDay 모양 조정
-        selectedDecoration : BoxDecoration(
+        selectedDecoration: BoxDecoration(
           color: PRIMARY_COLOR,
           shape: BoxShape.circle,
         ),
 
-
         markersAlignment: Alignment.center,
-
-
       ),
-
-      eventLoader: widget.getEventsForDay ,
-
+      eventLoader: widget.getEventsForDay,
       focusedDay: _focusedDay,
-      selectedDayPredicate: (day) {     // 선택된 날짜 구분할 로직
+      selectedDayPredicate: (day) {
+        // 선택된 날짜 구분할 로직
         return isSameDay(selectedDate, day);
       },
-      onDaySelected: (selectedDay, focusedDay) {  // 날짜 선택 시 실핼할 함수
+      onDaySelected: (selectedDay, focusedDay) {
+        // 날짜 선택 시 실핼할 함수
 
-        print("@!onDaySelected  select : ${selectedDate}   focus : ${_focusedDay}  " );
-        onDaySelected(selectedDay, focusedDay );
+        print(
+            "@!onDaySelected  select : ${selectedDate}   focus : ${_focusedDay}  ");
+        onDaySelected(selectedDay, focusedDay);
         if (!isSameDay(selectedDate, selectedDay)) {
           setState(() {
             selectedDate = selectedDay;
@@ -100,17 +95,16 @@ class _mainCalendar extends State<MainCalendar>{
           });
         }
       },
-
       headerStyle: HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,
       ),
-
       formatAnimationCurve: Curves.easeInOutCirc,
       formatAnimationDuration: Duration(milliseconds: 200),
       calendarFormat: _calendarFormat,
       onFormatChanged: (format) {
-        print("@!onFormatChanged  select : ${selectedDate}   focus : ${_focusedDay}  " );
+        print(
+            "@!onFormatChanged  select : ${selectedDate}   focus : ${_focusedDay}  ");
         onFormatChanged(_focusedDay, selectedDate, format);
 
         if (_calendarFormat != format) {
@@ -119,19 +113,14 @@ class _mainCalendar extends State<MainCalendar>{
             _calendarFormat = format;
           });
         }
-
-
       },
       onPageChanged: (focusedDay) {
-        // No need to call `setState()` here
-        print("@!onPageChanged  select : ${selectedDate}   focus : ${_focusedDay}  focusDay : ${_focusedDay} " );
+        print(
+            "@!onPageChanged  select : ${selectedDate}   focus : ${_focusedDay}  focusDay : ${_focusedDay} ");
         onPageChanged(_focusedDay, selectedDate, focusedDay);
 
         _focusedDay = focusedDay;
-
       },
-
-
       calendarBuilders: CalendarBuilders(
         markerBuilder: (BuildContext context, date, events) {
           if (events.isEmpty) return SizedBox();
@@ -147,16 +136,13 @@ class _mainCalendar extends State<MainCalendar>{
                     // height: 7, // for vertical axis
                     width: 10, // for horizontal axis
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: colorList[
-                          color(widget.colorCnt)
-                        ],
+                      shape: BoxShape.circle,
+                      color: colorList[color(widget.colorCnt)],
                     ),
                   ),
                 );
               });
         },
-
         defaultBuilder: (context, day, focusDay) {
           if (day.weekday == DateTime.sunday) {
             return Center(
@@ -165,7 +151,7 @@ class _mainCalendar extends State<MainCalendar>{
                 style: TextStyle(color: Colors.red),
               ),
             );
-          }else if(day.weekday == DateTime.saturday){
+          } else if (day.weekday == DateTime.saturday) {
             return Center(
               child: Text(
                 '${day.day}',
@@ -182,7 +168,7 @@ class _mainCalendar extends State<MainCalendar>{
                 style: TextStyle(color: Colors.red),
               ),
             );
-          }else if(day.weekday == DateTime.saturday){
+          } else if (day.weekday == DateTime.saturday) {
             return const Center(
               child: Text(
                 "토",
@@ -191,25 +177,17 @@ class _mainCalendar extends State<MainCalendar>{
             );
           }
         },
-
       ),
-
-
-
-
     );
   }
 
-
-  dynamic color(int colorCnt){
-    print("color  nu1 ${colorCnt}");
-    if(colorCnt >= colorList.length-1){
+  dynamic color(int colorCnt) {
+    if (colorCnt >= colorList.length - 1) {
       widget.colorCnt = 0;
-    }else{
+    } else {
       widget.colorCnt++;
     }
 
-    print("color  nu2 ${colorCnt}");
     return widget.colorCnt;
   }
 }

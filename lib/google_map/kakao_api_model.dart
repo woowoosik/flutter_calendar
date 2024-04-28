@@ -120,31 +120,3 @@ class Meta {
   }
 }
 
-
-
-/*
-
-class SameName {
-  String? keyword;
-  List<dynamic>? region;
-  String? selectedRegion;
-
-  SameName({this.keyword, this.region, this.selectedRegion});
-
-  SameName.fromJson(Map<String, dynamic> json) {
-    keyword = json['keyword'];
-    region = json['region'];
-    selectedRegion = json['selected_region'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['keyword'] = this.keyword;
-    if (this.region != null) {
-      data['region'] = this.region!.map((v) => v.toJson()).toList();
-    }
-    data['selected_region'] = this.selectedRegion;
-    return data;
-  }
-}
-*/

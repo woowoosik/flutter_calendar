@@ -19,7 +19,6 @@ class CalendarProvider extends ChangeNotifier{
 
   void addEvent(DateTime dateTime, dynamic e) {
 
-    // events[dateTime]?.add(e);
     print("addEvent  ${dateTime}  ${e}");
 
     if(events[dateTime] != null){
@@ -28,14 +27,13 @@ class CalendarProvider extends ChangeNotifier{
       events.putIfAbsent(dateTime, () => [e]);  //  키 값 없을때
     }
 
-    print("addEvent  ${dateTime}  ${events}");
 
     notifyListeners();
   }
 
   void getEvents(dynamic e){
     events = e;
-    print("!! ${events}");
+    print("getEvents ${events}");
   }
 
 

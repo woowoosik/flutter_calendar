@@ -51,6 +51,7 @@ class SameName{
 
 }
 */
+/*
 
 class Place{
 
@@ -120,3 +121,4 @@ class Place{
   }
 
 }
+*/

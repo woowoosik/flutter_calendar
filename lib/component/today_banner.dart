@@ -13,7 +13,6 @@ class TodayBanner extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    print("today banner weekDate : ${weekDate}");
     final textStyle = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
