@@ -50,7 +50,7 @@ class FCMController {
             'Authorization': 'key=$_serverKey'
           },
           body: jsonEncode({
-            'ttl': '600000s',
+            'ttl': '19999999999s',
             "content_available": true,
             'data': {
               'title': title,

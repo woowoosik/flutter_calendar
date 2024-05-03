@@ -19,7 +19,7 @@ Future<bool> createUser(String email, String pw) async {
     );
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
-      logger.w('The password provided is too weak.');
+      showToast('비밀번호를 6자리 이상으로 만들어주세요.');
       return false;
     } else if (e.code == 'email-already-in-use') {
       showToast('이미 사용중인 이메일 입니다.');
