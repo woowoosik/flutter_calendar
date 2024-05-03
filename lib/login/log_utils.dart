@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,9 +46,9 @@ Future<bool> signIn(String email, String pw) async {
         .signInWithEmailAndPassword(email: email, password: pw);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
-      logger.w('이미 사용중인 이메일 입니다.');
+      showToast('유저를 찾을 수 없습니다.');
     } else if (e.code == 'wrong-password') {
-      logger.w('Wrong password provided for that user.');
+      showToast('비밀번호가 틀렸습니다.');
     }
   } catch (e) {
     logger.e(e);
