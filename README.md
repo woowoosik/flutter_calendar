@@ -79,7 +79,7 @@
 
 #### FCM
 
-|<img src="https://github.com/woowoosik/flutter_calendar/assets/49232649/bd81d16c-0f45-4187-be64-605952c6c140" width="200" height="400"/>|
+|<img src="https://github.com/woowoosik/flutter_calendar/assets/49232649/423d51dc-f4a6-4c54-9338-eb34e87ef560" width="200" height="400"/>|
 |---|
 |FCM으로 보내고 받기|
 
