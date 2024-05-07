@@ -28,11 +28,19 @@ class _LoginPage extends State<LoginPage> {
   Logger logger = Logger();
 
   @override
-  Widget build(BuildContext context) {
-    print("getUser : ${getUser()}");
+  void initState() {
+    super.initState();
     widget.userUid = getUser()?.uid;
+  }
+  @override
+  Widget build(BuildContext context) {
+
+    logger.d(" logger : @@@@ _LoginPage build ${getUser()} @@@@");
+
+    // widget.userUid = getUser()?.uid;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      Logger().d('addPostFrameCallback');
       if (widget.userUid != null) {
         navigator(context, HomePage());
       }
@@ -125,6 +133,7 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void navigator(BuildContext context, dynamic movePage) {
+    Logger().d("navigator");
     Navigator.pushAndRemoveUntil(
         context,
         PageRouteBuilder(
@@ -148,7 +157,7 @@ class _LoginPage extends State<LoginPage> {
   }
 
   Future<void> login() async {
-    CircularProgressIndicator();
+    const CircularProgressIndicator();
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(
@@ -181,4 +190,8 @@ class _LoginPage extends State<LoginPage> {
           pageBuilder: (context, animation, secondaryAnimation) => SignInPage(),
         ));
   }
+
+
+
+
 }

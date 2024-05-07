@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:logger_plus/logger_plus.dart';
 import 'package:schedule_calendar/firebase_options.dart';
 import 'package:schedule_calendar/fcm/forground_notification.dart';
 import 'package:schedule_calendar/login/login_page.dart';
@@ -76,7 +77,7 @@ void main() async {
 
 Future<void> requestNotificationPermission() async {
   String? _fcmToken = await FirebaseMessaging.instance.getToken();
-  print('token :  ${_fcmToken}');
+  Logger().d('token :  ${_fcmToken}');
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -90,7 +91,7 @@ Future<void> requestNotificationPermission() async {
     sound: true,
   );
 
-  print('User granted permission: ${settings.authorizationStatus}');
+  ('User granted permission: ${settings.authorizationStatus}');
 }
 
 class MyApp extends StatelessWidget {

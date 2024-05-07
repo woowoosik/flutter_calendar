@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logger_plus/logger_plus.dart';
 import 'package:schedule_calendar/component/schedule_bottom_sheet.dart';
 import 'package:schedule_calendar/login/login_page.dart';
 
@@ -106,6 +107,8 @@ User? getUser() {
     final emailVerified = user.emailVerified;
 
     final uid = user.uid;
+
+    Logger().d('getUser');
 
     print("user uid : ${user.uid}");
     print("user get id token : ${user.getIdToken()}");

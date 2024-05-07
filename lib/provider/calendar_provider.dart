@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:logger_plus/logger_plus.dart';
 
 class CalendarProvider extends ChangeNotifier{
 
@@ -7,7 +8,7 @@ class CalendarProvider extends ChangeNotifier{
 
   void removeEvent(DateTime dateTime, dynamic id){
 
-    print("removeEvent  ${dateTime}  ${id}");
+    Logger().d("removeEvent  ${dateTime}  ${id}");
     for(var s =0; s< events[dateTime]!.length; s++){
       if( events[dateTime]![s].id == id){
         events[dateTime]!.removeAt(s);
@@ -19,7 +20,7 @@ class CalendarProvider extends ChangeNotifier{
 
   void addEvent(DateTime dateTime, dynamic e) {
 
-    print("addEvent  ${dateTime}  ${e}");
+    Logger().d("addEvent  ${dateTime}  ${e}");
 
     if(events[dateTime] != null){
       events[dateTime]?.add(e);   //   키 값 있을때
@@ -33,7 +34,7 @@ class CalendarProvider extends ChangeNotifier{
 
   void getEvents(dynamic e){
     events = e;
-    print("getEvents ${events}");
+    Logger().d("getEvents ${events}");
   }
 
 

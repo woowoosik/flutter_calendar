@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger_plus/logger_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:schedule_calendar/calendar_week.dart';
 import 'package:schedule_calendar/fcm/forground_notification.dart';
@@ -26,6 +29,8 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late var provider;
 
+  Logger logger = Logger();
+
   var root = FirebaseAuth.instance.currentUser!.uid;
 
   DateTime selectedDate = DateTime.utc(
@@ -47,200 +52,196 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   Map<DateTime, List<dynamic>> events = {};
 
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      provider = Provider.of<CalendarProvider>(context, listen: false);
-
-      getEventMarker();
-
-      Provider.of<CalendarProvider>(context, listen: false).getEvents(events);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     provider = Provider.of<CalendarProvider>(context);
+    logger.d(" logger : @@@@ HOME PAGE @@@@");
 
     const List<String> list = <String>['로그아웃', '탈퇴하기'];
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton.small(
-        shape: const CircleBorder(),
-        backgroundColor: PRIMARY_COLOR,
-        onPressed: () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(1, 1),
-                    end: const Offset(0.0, 0.0),
-                  ).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeInOutCubic,
-                    ),
+    return FutureBuilder(
+      future: getEventMarker(),
+      builder: (context, snapshot) {
+        return Scaffold(
+          floatingActionButton: FloatingActionButton.small(
+            shape: const CircleBorder(),
+            backgroundColor: PRIMARY_COLOR,
+            onPressed: () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(1, 1),
+                        end: const Offset(0.0, 0.0),
+                      ).animate(
+                        CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeInOutCubic,
+                        ),
+                      ),
+                      child: child,
+                    );
+                  },
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      ScheduleBottomSheet(
+                    selectedDate: selectedDate,
                   ),
-                  child: child,
-                );
-              },
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  ScheduleBottomSheet(
-                selectedDate: selectedDate,
+                  fullscreenDialog: false,
+                ),
+              );
+            },
+            child: Icon(Icons.add),
+          ),
+          appBar: AppBar(
+            title: const Text('Schedule Calendar'),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: DropdownButton(
+                    underline: const SizedBox.shrink(),
+                    icon: const Icon(Icons.menu),
+                    items: list.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? str) async {
+                      if (str == list[0]) {
+                        await FirebaseAuth.instance.signOut();
+                        moveLoginPage();
+                      } else {
+                        userDelete();
+                      }
+                    }),
               ),
-              fullscreenDialog: false,
-            ),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
-      appBar: AppBar(
-        title: Text('Schedule Calendar'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15.0),
-            child: DropdownButton(
-                underline: const SizedBox.shrink(),
-                icon: const Icon(Icons.menu),
-                items: list.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? str) async {
-                  if (str == list[0]) {
-                    await FirebaseAuth.instance.signOut();
-                    moveLoginPage();
-                  } else {
-                    userDelete();
-                  }
-                }),
+            ],
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          MainCalendar(
-            getEventsForDay: getEventsForDay,
-            selectedDate: selectedDate,
-            //   날짜 전달
-            onDaySelected: onDaySelected,
-            //  typedef
-            onFormatChanged: onFormatChanged,
-            onPageChanged: onPageChanged,
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                Visibility(
-                  visible: visible,
-                  child: Expanded(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 8.0),
-                        TodayBanner(
-                          selectedDate: selectedDate,
-                          count: provider.events[selectedDate] == null
-                              ? 0
-                              : provider.events[selectedDate].length,
-                          weekDate: weekDate,
-                        ),
-                        SizedBox(height: 8.0),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: provider.events[selectedDate] == null
-                                ? 0
-                                : provider.events[selectedDate].length,
-                            itemBuilder: (context, index) {
-                              var events = provider.events[selectedDate]
-                                ..sort((a, b) {
-                                  var s = a.startTime as int;
-                                  var e = b.startTime as int;
-                                  return s.compareTo(e);
-                                });
+          body: Column(
+            children: [
+              MainCalendar(
+                getEventsForDay: getEventsForDay,
+                selectedDate: selectedDate,
+                //   날짜 전달
+                onDaySelected: onDaySelected,
+                //  typedef
+                onFormatChanged: onFormatChanged,
+                onPageChanged: onPageChanged,
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    Visibility(
+                      visible: visible,
+                      child: Expanded(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 8.0),
+                            TodayBanner(
+                              selectedDate: selectedDate,
+                              count: provider.events[selectedDate] == null
+                                  ? 0
+                                  : provider.events[selectedDate].length,
+                              weekDate: weekDate,
+                            ),
+                            SizedBox(height: 8.0),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: provider.events[selectedDate] == null
+                                    ? 0
+                                    : provider.events[selectedDate].length,
+                                itemBuilder: (context, index) {
+                                  var events = provider.events[selectedDate]
+                                    ..sort((a, b) {
+                                      var s = a.startTime as int;
+                                      var e = b.startTime as int;
+                                      return s.compareTo(e);
+                                    });
 
-                              final schedule = events[index];
+                                  final schedule = events[index];
 
-                              return Dismissible(
-                                key: ObjectKey(schedule.id),
-                                direction: DismissDirection.startToEnd,
-                                onDismissed: (DismissDirection direction) {
-                                  var k = DateTime.utc(schedule.date.year,
-                                      schedule.date.month, schedule.date.day);
+                                  return Dismissible(
+                                    key: ObjectKey(schedule.id),
+                                    direction: DismissDirection.startToEnd,
+                                    onDismissed: (DismissDirection direction) {
+                                      var k = DateTime.utc(
+                                          schedule.date.year,
+                                          schedule.date.month,
+                                          schedule.date.day);
 
-                                  provider.removeEvent(k, schedule.id);
+                                      provider.removeEvent(k, schedule.id);
 
-                                  FirebaseFirestore.instance
-                                      .collection('schedule')
-                                      .doc(root)
-                                      .collection(root)
-                                      .doc(schedule.id)
-                                      .delete();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 8.0, left: 8.0, right: 8.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          transitionsBuilder: (context,
-                                              animation,
-                                              secondaryAnimation,
-                                              child) {
-                                            return SlideTransition(
-                                              position: Tween<Offset>(
-                                                begin: const Offset(1, 0),
-                                                end: const Offset(0, 0),
-                                              ).animate(
-                                                CurvedAnimation(
-                                                  parent: animation,
-                                                  curve: Curves.easeInOutCubic,
-                                                ),
-                                              ),
-                                              child: child,
-                                            );
-                                          },
-                                          pageBuilder: (context, animation,
-                                                  secondaryAnimation) =>
-                                              ScheduleDetailPage(
-                                                  schedule: schedule),
-                                        ),
-                                      );
+                                      FirebaseFirestore.instance
+                                          .collection('schedule')
+                                          .doc(root)
+                                          .collection(root)
+                                          .doc(schedule.id)
+                                          .delete();
                                     },
-                                    child: ScheduleCard(
-                                      schedule: schedule,
-                                      startTime: schedule.startTime,
-                                      endTime: schedule.endTime,
-                                      content: schedule.content,
-                                      index: index,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 8.0, left: 8.0, right: 8.0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            PageRouteBuilder(
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                return SlideTransition(
+                                                  position: Tween<Offset>(
+                                                    begin: const Offset(1, 0),
+                                                    end: const Offset(0, 0),
+                                                  ).animate(
+                                                    CurvedAnimation(
+                                                      parent: animation,
+                                                      curve:
+                                                          Curves.easeInOutCubic,
+                                                    ),
+                                                  ),
+                                                  child: child,
+                                                );
+                                              },
+                                              pageBuilder: (context, animation,
+                                                      secondaryAnimation) =>
+                                                  ScheduleDetailPage(
+                                                      schedule: schedule),
+                                            ),
+                                          );
+                                        },
+                                        child: ScheduleCard(
+                                          schedule: schedule,
+                                          startTime: schedule.startTime,
+                                          endTime: schedule.endTime,
+                                          content: schedule.content,
+                                          index: index,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Visibility(
+                      visible: !visible,
+                      //child: Text("${weekDate}"),
+                      child: CalendarWeek(weekDate: weekDate),
+                    ),
+                  ],
                 ),
-                Visibility(
-                  visible: !visible,
-                  //child: Text("${weekDate}"),
-                  child: CalendarWeek(weekDate: weekDate),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -430,7 +431,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
   void onFormatChanged(
       DateTime selectedDate, DateTime focusedDate, dynamic format) {
-    print('onFormatChanged  ${selectedDate}  ${focusedDate}  ${format}');
+    logger.d('onFormatChanged:  ${selectedDate}  ${focusedDate}  ${format}');
     setState(() {
       visible = format == CalendarFormat.week ? false : true;
     });
@@ -439,7 +440,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   void onPageChanged(
       DateTime selectedDate, DateTime focusedDate, DateTime focusedDay) async {
     setState(() {
-      print("~~ onPageChanged ${selectedDate}  ${focusedDate}  ${focusedDay} ");
+      logger
+          .d("onPageChanged: ${selectedDate}  ${focusedDate}  ${focusedDay} ");
       weekDate = focusedDay;
     });
   }
@@ -450,7 +452,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
   Future<dynamic> getEventMarker() async {
     events = {};
-    print("uid : ${FirebaseAuth.instance.currentUser!.uid}");
+    logger.d("uid : ${FirebaseAuth.instance.currentUser!.uid}");
+
     await FirebaseFirestore.instance
         .collection('schedule')
         .doc(root)
@@ -491,8 +494,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       onError: (e) => print("Error completing: $e"),
     );
 
-    setState(() {});
-
+    // setState(() {});
+    Provider.of<CalendarProvider>(context, listen: false).getEvents(events);
     return events;
   }
 }
