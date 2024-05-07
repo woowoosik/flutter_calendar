@@ -8,6 +8,7 @@ import 'package:logger_plus/logger_plus.dart';
 import 'package:schedule_calendar/firebase_options.dart';
 import 'package:schedule_calendar/fcm/forground_notification.dart';
 import 'package:schedule_calendar/login/login_page.dart';
+import 'package:schedule_calendar/login/splash_page.dart';
 import 'package:schedule_calendar/provider/calendar_provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
@@ -101,7 +102,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: SplashPage(),
     );
   }
 }

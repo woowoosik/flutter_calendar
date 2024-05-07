@@ -31,13 +31,6 @@ class _LoginPage extends State<LoginPage> {
   void initState() {
     super.initState();
     widget.userUid = getUser()?.uid;
-  }
-  @override
-  Widget build(BuildContext context) {
-
-    logger.d(" logger : @@@@ _LoginPage build ${getUser()} @@@@");
-
-    // widget.userUid = getUser()?.uid;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Logger().d('addPostFrameCallback');
@@ -45,6 +38,13 @@ class _LoginPage extends State<LoginPage> {
         navigator(context, HomePage());
       }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    logger.d(" logger : @@@@ _LoginPage build ${getUser()} @@@@");
+
+    // widget.userUid = getUser()?.uid;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -190,8 +190,6 @@ class _LoginPage extends State<LoginPage> {
           pageBuilder: (context, animation, secondaryAnimation) => SignInPage(),
         ));
   }
-
-
 
 
 }
