@@ -68,27 +68,26 @@ class _SplashPage extends State<SplashPage> with TickerProviderStateMixin {
 
   void splashNavigator(BuildContext context, Widget movePage) {
     Future.delayed(Duration(milliseconds: 700))
-        .then((onValue) => Navigator.push(
-              context,
-              PageRouteBuilder(
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(1, 0),
-                      end: const Offset(0, 0),
-                    ).animate(
-                      CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.easeInOutCubic,
-                      ),
+        .then((onValue) => Navigator.pushAndRemoveUntil(
+            context,
+            PageRouteBuilder(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(1, 0),
+                    end: const Offset(0, 0),
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeInOutCubic,
                     ),
-                    child: child,
-                  );
-                },
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    movePage,
-              ),
-            ));
+                  ),
+                  child: child,
+                );
+              },
+              pageBuilder: (context, animation, secondaryAnimation) => movePage,
+            ),
+            (route) => false));
   }
 }
